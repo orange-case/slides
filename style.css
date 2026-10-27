@@ -1,0 +1,106 @@
+:root {
+  --accent: #0d9488;
+  --warn: #ea580c;
+  --line: rgba(0, 0, 0, 0.2);
+}
+
+html.dark {
+  --accent: #5eead4;
+  --warn: #fb923c;
+  --line: rgba(255, 255, 255, 0.25);
+}
+
+.slidev-layout {
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* One big sentence per slide */
+.statement {
+  font-size: 3rem;
+  line-height: 1.2;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.statement .dim {
+  opacity: 0.4;
+}
+
+.accent {
+  color: var(--accent);
+}
+.warn {
+  color: var(--warn);
+}
+
+.kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 0.8rem;
+  opacity: 0.55;
+  margin-bottom: 1rem;
+}
+
+.footnote {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 3.5rem;
+  right: 3.5rem;
+  font-size: 0.7rem;
+  opacity: 0.5;
+}
+
+.bio-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 1rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  min-height: 6.5rem;
+}
+
+.big-code .slidev-code {
+  font-size: 1.35rem !important;
+  line-height: 1.6 !important;
+  padding: 1.5rem 2rem !important;
+}
+
+/* Technical loop: App → Collector → Agent → OpenFeature → App */
+.tloop {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  grid-template-rows: auto auto auto;
+  gap: 0.75rem 1.5rem;
+  align-items: center;
+}
+.tnode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.9rem 1.25rem;
+  border: 2px solid var(--line);
+  border-radius: 14px;
+  font-size: 1.3rem;
+}
+.tnode span {
+  font-size: 0.85rem;
+  opacity: 0.6;
+}
+.tnode.hot {
+  border-color: var(--accent);
+  box-shadow: 0 0 28px -8px var(--accent);
+}
+.tarrow {
+  text-align: center;
+  font-size: 0.95rem;
+  opacity: 0.7;
+  font-family: var(--slidev-code-font-family, monospace);
+}
+
+table.wires td,
+table.wires th {
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--line);
+}
