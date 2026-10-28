@@ -329,7 +329,7 @@ layout: center
   <div class="tnode" v-click="1">📡 <b>OTel Collector</b><span>traces · metrics · events</span></div>
   <div class="tarrow" v-click="4">↑ evaluate · no redeploy</div>
   <div></div>
-  <div class="tarrow" v-click="2">↓ query</div>
+  <div class="tarrow" v-click="2">↓ OTLP export</div>
   <div class="tnode" v-click="4">🎚️ <b>OpenFeature</b><span>flagd · provider</span></div>
   <div class="tarrow" v-click="3">← set flag</div>
   <div class="tnode hot" v-click="2">🤖 <b>Agent</b><span>game master</span></div>
@@ -347,7 +347,7 @@ const shield = await client.getBooleanValue('agent-may-grant-shield', false)
 <!--
 [Keep it quick — this is for the engineers in the room.]
 
-[click] The game emits telemetry over OTLP to a Collector. [click] The agent reads from there. [click] When it decides, it does not touch code. It sets a flag. [click] The game evaluates that flag through OpenFeature on the next tick.
+[click] The game emits telemetry over OTLP to a Collector. [click] The Collector exports it to the agent, which has its own OTLP receiver. [click] When it decides, it does not touch code. It sets a flag. [click] The game evaluates that flag through OpenFeature on the next tick.
 
 [click] This line never changes. The behavior does.
 -->
