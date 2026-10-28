@@ -61,6 +61,24 @@ html.dark {
   min-height: 6.5rem;
 }
 
+.ladder {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+}
+.ladder > div {
+  display: flex;
+  flex-direction: column;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.ladder span {
+  opacity: 0.6;
+}
+
 .big-code .slidev-code {
   font-size: 1.35rem !important;
   line-height: 1.6 !important;

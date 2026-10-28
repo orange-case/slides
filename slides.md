@@ -82,26 +82,14 @@ layout: center
 AI mutates code faster than we can review it.
 </div>
 
-<div v-click class="statement mt-10">
-Mutation <span class="warn">without selection</span>.
-</div>
-
-<!--
-AI mutates code faster than we can review it.
-
-[click] Mutation without selection pressure.
--->
-
----
-layout: center
----
-
-<div class="statement">
+<div class="statement mt-10">
 The problem is not the speed.<br>
 <span v-click>It is the missing <span class="accent">selection</span>.</span>
 </div>
 
 <!--
+AI mutates code faster than we can review it.
+
 The problem is not the speed. [click] It is the missing selection.
 -->
 
@@ -270,10 +258,16 @@ layout: center
 
 <Loop sense="OpenTelemetry" sense-sub="senses" middle="🧍" middle-sub="watches · decides · sets the flag" act="OpenFeature" act-sub="muscles" />
 
+<div v-click class="kicker text-center mt-12">
+The question is not whether something else can act. It is where its authority lives.
+</div>
+
 <!--
 So we have the senses. We have the muscles. And in between, still, a person.
 
 A human watches the dashboard. Decides what the signal means. Sets the flag.
+
+[click] The question is not whether something else can act. It is where its authority lives.
 -->
 
 ---
@@ -282,10 +276,11 @@ layout: center
 
 <div class="kicker">§3 · The experiment</div>
 
-# A party game 🎮
+# A system I already trust 🎮
 
 <div class="text-2xl mt-8 space-y-3 opacity-80">
-  <div v-click>Players hold PS Move controllers</div>
+  <div v-click>A PS Move party game, used at KubeCon for high-density OpenTelemetry data</div>
+  <div v-click>Refactored into microservices · gRPC · multiple languages</div>
   <div v-click>An agent on top — it does not play, it is the <span class="accent">game master</span></div>
   <div v-click class="opacity-60">Players are simulated (not enough real people around)</div>
 </div>
@@ -293,9 +288,11 @@ layout: center
 <!--
 §3 The experiment
 
-I wanted to see what happens when something else takes that seat. So I tried it on something small.
+I wanted to see what happens when something else takes that seat. So I tried it on a system I already trust.
 
-[click] I built a party game. Players hold PS Move controllers. [click] On top of it sits an agent. The agent does not play. It is the game master.
+[click] A party game. Players hold PS Move controllers. I have used it at KubeCon to produce dense OpenTelemetry data. [click] Since then it became microservices. gRPC, multiple languages, the shape of a real distributed system.
+
+[click] On top of it sits an agent. The agent does not play. It is the game master.
 
 [click] In my tests, the players are simulated. I rarely have enough real people around.
 -->
@@ -307,14 +304,14 @@ layout: center
 <Loop sense="OpenTelemetry" sense-sub="game signals" middle="🤖 Agent" middle-sub="game master" act="Flag" act-sub="game behavior" hot />
 
 <div v-click class="text-center mt-10 text-2xl">
-  Goal flag: <code>long-lasting</code> <span class="opacity-40">or</span> <code>action</code>
+  Goal flag <code>objectives</code>: <code>endurance</code> · <code>accelerate</code> · <code>chaos</code>
   <div class="text-lg opacity-60 mt-2">I set it. The agent works toward it.</div>
 </div>
 
 <!--
 The game senses through OpenTelemetry. The agent decides. It acts through a flag.
 
-[click] The goal is a flag too. Long-lasting games, or fun, action-based ones. I set it. The agent works toward it.
+[click] The goal is a flag too. Endurance, accelerate, or chaos. I set it. The agent works toward it.
 -->
 
 ---
@@ -324,9 +321,9 @@ layout: center
 <div class="kicker">Under the hood · one loop</div>
 
 <div class="tloop">
-  <div class="tnode">🎮 <b>Application</b><span>the game</span></div>
+  <div class="tnode">🎮 <b>Game services</b><span>gRPC · polyglot microservices</span></div>
   <div class="tarrow" v-click="1">OTLP →</div>
-  <div class="tnode" v-click="1">📡 <b>OTel Collector</b><span>traces · metrics · events</span></div>
+  <div class="tnode" v-click="1">📡 <b>OTel Collector</b><span>high-density traces · metrics · events</span></div>
   <div class="tarrow" v-click="4">↑ evaluate · no redeploy</div>
   <div></div>
   <div class="tarrow" v-click="2">↓ OTLP export</div>
@@ -337,9 +334,9 @@ layout: center
 
 <div v-click="5" class="mt-6">
 
-```ts
-// in the game loop — the agent never touches this code
-const shield = await client.getBooleanValue('agent-may-grant-shield', false)
+```python
+# in the game loop — the agent never touches this code
+level = client.get_string_value("interventions_allowed", "")
 ```
 
 </div>
@@ -347,7 +344,7 @@ const shield = await client.getBooleanValue('agent-may-grant-shield', false)
 <!--
 [Keep it quick — this is for the engineers in the room.]
 
-[click] The game emits telemetry over OTLP to a Collector. [click] The Collector exports it to the agent, which has its own OTLP receiver. [click] When it decides, it does not touch code. It sets a flag. [click] The game evaluates that flag through OpenFeature on the next tick.
+[click] The game services emit telemetry over OTLP to a Collector. [click] The Collector exports it to the agent, which has its own OTLP receiver. [click] When it decides, it does not touch code. It sets a flag. [click] The game picks that flag up through OpenFeature within a second. No redeploy.
 
 [click] This line never changes. The behavior does.
 -->
@@ -362,32 +359,50 @@ class: big-code
 ````md magic-move {lines: true}
 ```json
 {
-  "agent-may-grant-shield": {
+  "interventions_allowed": {
     "state": "ENABLED",
-    "variants": { "on": true, "off": false },
-    "defaultVariant": "off"
+    "variants": {
+      "ambient": "ambient",
+      "standard": "standard",
+      "full": "full"
+    },
+    "defaultVariant": "ambient"
   }
 }
 ```
 ```json
 {
-  "agent-may-grant-shield": {
+  "interventions_allowed": {
     "state": "ENABLED",
-    "variants": { "on": true, "off": false },
-    "defaultVariant": "on"
+    "variants": {
+      "ambient": "ambient",
+      "standard": "standard",
+      "full": "full"
+    },
+    "defaultVariant": "standard"
   }
 }
 ```
 ```json
 {
-  "agent-may-grant-shield": {
+  "interventions_allowed": {
     "state": "ENABLED",
-    "variants": { "on": true, "off": false },
-    "defaultVariant": "off"
+    "variants": {
+      "ambient": "ambient",
+      "standard": "standard",
+      "full": "full"
+    },
+    "defaultVariant": "ambient"
   }
 }
 ```
 ````
+
+<div class="ladder">
+  <div><b>ambient</b><span>sound · LED</span></div>
+  <div><b>standard</b><span>+ grant shield</span></div>
+  <div><b>full</b><span>+ eliminate · revive · end game</span></div>
+</div>
 
 <!--
 My agent saw the weakest player. The field was shrinking. It wanted to shield that player.
@@ -396,7 +411,7 @@ It was not allowed to.
 
 [PAUSE]
 
-By default, the agent cannot grant shields. That permission is a flag. [click] I flipped it. The agent shielded the player. [click] A few seconds later, it reverted.
+By default, the agent may only use sound and lights. Granting a shield is one level up. That permission is a flag. [click] I raised it to standard. The agent shielded the player. [click] A few seconds later, I switched it back.
 -->
 
 ---
@@ -412,7 +427,7 @@ Its <span class="accent">authority</span> did.
 </div>
 
 <div v-click class="text-2xl mt-12 opacity-60">
-No mutation. No pull request. No redeploy.
+No code change. No review. No redeploy.
 </div>
 
 <!--
@@ -420,7 +435,30 @@ Its judgment did not change.
 
 [click] Its authority did.
 
-[click] No mutation. No pull request. No redeploy.
+[click] No code change. No review. No redeploy.
+-->
+
+---
+layout: center
+---
+
+<div class="kicker">The game is small. The pattern is not.</div>
+
+<div class="text-3xl space-y-4 mt-8">
+  <div v-click>Incident response</div>
+  <div v-click>Progressive delivery</div>
+  <div v-click>Capacity and cost</div>
+  <div v-click>Policy enforcement</div>
+</div>
+
+<div v-click class="text-2xl mt-10 accent">Which decisions can safely become reflexes?</div>
+
+<!--
+The game is small. The pattern is not.
+
+[click] Incident response. [click] Progressive delivery. [click] Capacity and cost. [click] Policy enforcement.
+
+[click] The question is always the same. Which decisions can safely become reflexes, and which must stay deliberate?
 -->
 
 ---
@@ -456,19 +494,21 @@ layout: center
 </div>
 
 <div v-click class="text-2xl text-center mt-12 opacity-80">
-  Every flag I flip gives the agent a little more.
+  Every level I unlock gives the agent a little more.
 </div>
 
 <div v-click class="text-2xl text-center mt-4 warn">
-  The shield was easy. The next one will not be.
+  Every reflex needs an explicit boundary.
 </div>
 
 <!--
 Reflexes are not fixed. When you learn to drive, every move is deliberate. A year later, you do not think about it. Practice moves decisions from the cortex to the reflex.
 
-[click] Our systems will do the same. Every flag I flip gives the agent a little more.
+[click] Our systems will do the same. Ambient, standard, full. Every level I unlock gives the agent a little more.
 
-[click] The shield was easy. The next one will not be.
+[click] So every reflex needs an explicit boundary. The shield was easy. The next one needs better limits.
+
+[If asked "isn't the agent itself split into fast rules and a slower LLM?": yes. But the whole agent is the reflex, because it acts inside limits a human set.]
 -->
 
 ---
@@ -512,14 +552,19 @@ layout: center
   <div v-click>🎚️ Which levers exist</div>
   <div v-click>📏 How far each one can move</div>
   <div v-click>💚 What healthy means</div>
+  <div v-click>🛑 The kill switch</div>
 </div>
 
 <div v-click class="text-2xl mt-10 warn">Mutation stays with us. On purpose.</div>
 
 <!--
-The cortex decides what the organism is for. In my game, that is the goal flag. [click] [click] Which levers exist. [click] How far each one can move. [click] What healthy means.
+The cortex decides what the organism is for. In my game, that is the objectives flag. [click] [click] Which levers exist. [click] How far each one can move. [click] What healthy means.
+
+[click] And the kill switch. One flag, and the agent stops. Immediately.
 
 [click] Mutation stays with us. On purpose.
+
+[If asked "but the agent promotes new defaults from shadow experiments": it may change things only between games, never during one. The kill switch always wins. It never overwrites a value someone else set.]
 -->
 
 ---
@@ -540,21 +585,21 @@ The agent decides. [click] We decide what it may decide.
 layout: center
 ---
 
-<div class="kicker">§5 · Where the boundary lives</div>
+<div class="kicker">§5 · The boundary must be portable</div>
 
 <div class="grid grid-cols-2 gap-16 text-2xl">
 <div>
 
-<div class="kicker">The wires · shared</div>
+<div class="kicker">The wires · increasingly shared</div>
 
 MCP · A2A · Open Responses
 
 </div>
 <div v-click="1">
 
-<div class="kicker">The rules · per vendor</div>
+<div class="kicker">The rules · still trapped</div>
 
-<span class="warn">Permissions · Guardrails</span>
+<span class="warn">Permissions · Guardrails · Audit</span>
 
 </div>
 </div>
@@ -565,15 +610,15 @@ OpenTelemetry and OpenFeature happened <span class="accent">at the same table</s
 </div>
 
 <div class="footnote">
-Checked 14 Oct 2026. MCP and A2A are AAIF projects; Open Responses ships spec + acceptance tests. OTel GenAI semantic conventions are still in Development status.
+Checked 14 Oct 2026. MCP and A2A are AAIF projects; Open Responses provides a specification and acceptance tests. OTel GenAI semantic conventions are still in Development status.
 </div>
 
 <!--
-§5 Where the boundary lives
+§5 The boundary must be portable
 
 That boundary has to live somewhere. The wires are getting standardized. MCP, A2A, even the model call.
 
-[click] The rules are not. What an agent is allowed to do lives inside one vendor's control plane. If that joint is proprietary, you cannot move your boundaries when you replace the agent.
+[click] The rules are not. What an agent may decide, with what evidence, and how to undo it, lives inside one vendor's control plane. If that joint is proprietary, you cannot move your boundaries when you replace the agent.
 
 [click] We have been here before. OpenTelemetry and OpenFeature happened because people from many companies sat at the same table. This one can too.
 
