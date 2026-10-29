@@ -555,14 +555,18 @@ layout: center
   <div v-click>🛑 The kill switch</div>
 </div>
 
-<div v-click class="text-2xl mt-10 warn">Mutation stays with us. On purpose.</div>
+<div v-click class="text-2xl mt-10 warn">The decision to mutate stays with us.</div>
 
 <!--
 The cortex decides what the organism is for. In my game, that is the objectives flag. [click] [click] Which levers exist. [click] How far each one can move. [click] What healthy means.
 
 [click] And the kill switch. One flag, and the agent stops. Immediately.
 
-[click] Mutation stays with us. On purpose.
+[click] Mutation is still the last resort. But that does not mean we write every line. You can hand it to a dark factory, if you are brave enough.
+
+[PAUSE]
+
+That is a decision too. A human one. Made on purpose.
 
 [If asked "but the agent promotes new defaults from shadow experiments": it may change things only between games, never during one. The kill switch always wins. It never overwrites a value someone else set.]
 -->
