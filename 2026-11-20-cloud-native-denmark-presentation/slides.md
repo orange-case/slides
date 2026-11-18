@@ -681,7 +681,7 @@ layout: center
 <!--
 The game is small. The pattern is not.
 
-[click] Incident response. [click] Progressive delivery. [click] Capacity and cost. [click] Policy enforcement.
+[click] Incident response. [click] Progressive delivery: my game already does a small version of it. A suggestion is tried in paired shadow games before anything is promoted. That is canary analysis. [click] Capacity and cost. [click] Policy enforcement.
 
 [click] The question is always the same. Which decisions can safely become reflexes, and which must stay deliberate?
 -->
@@ -915,7 +915,7 @@ class: text-center
 <div class="statement opacity-60">For questions</div>
 
 <!--
-[Backup slides: the permission flip as a magic move (fallback for demo beat 2), the decide span, the live views, the audit view, and where this goes next.]
+[Backup slides: the permission flip as a magic move (fallback for demo beat 2), the decide span, the live views, the audit view, the experiment loop, and where this goes next.]
 -->
 
 ---
@@ -1081,6 +1081,44 @@ And it works the other way. I change a flag there, and it comes back as an ordin
 [click] Evaluation stays local and boring. The UI is a writer, and a window.
 
 [Show it live if time allows: the agent's game-scoped writes appearing as identity overrides in Flagsmith.]
+-->
+
+---
+layout: center
+---
+
+<div class="kicker">Does it improve itself? · only behind gates</div>
+
+<div class="pipe pipe-4">
+  <div class="st"><b>💡 suggestion</b><span>after the game</span><code>retro.suggestion</code></div>
+  <div class="st hot" v-click="1"><b>🧪 shadow games</b><span>baseline vs change · same pattern, same seed</span><code>paired</code></div>
+  <div class="st" v-click="2"><b>⚖️ verdict</b><span>per pair, scored by the objective</span><code>objectives</code></div>
+  <div class="st" v-click="3"><b>🚀 promotion</b><span>game rules only · next game</span><code>real overlay</code></div>
+</div>
+
+<div v-click="4" class="floor">
+  gated by <code>experiments_enabled</code> · the kill switch · an env gate &nbsp;·&nbsp; <b>one DELETE reverts it</b>
+  <span class="opacity-60">&nbsp;· never writes the agent's own limits</span>
+</div>
+
+<div v-click="5" class="text-2xl text-center mt-8">Today: <code>experiments_enabled</code> = <span class="warn">off</span>. That is a decision too.</div>
+
+<!--
+[BACKUP: for "so does it improve itself?"]
+
+The summary after the game suggests a change. It can also become an experiment.
+
+[click] The agent runs shadow games: mock players, no audience, no sound. Each pair is the same movement pattern with the same seed, once with today's value and once with the change, one after the other. So luck and skill cancel out. About twelve games for one experiment.
+
+[click] The verdict is per pair, scored by the objective: endurance, balanced or accelerate.
+
+[click] And if the change wins, it is promoted: an overlay on the game rules, from the next game on. Only the game set. Sensitivity, spawn protection, that kind of thing.
+
+[click] All of it behind gates. The experiments flag, the kill switch, an env gate on the machine. One DELETE reverts a promotion. And it never writes the agent's own limits: those are mine.
+
+[click] For this talk the flag is off. That is the dark factory, and switching it on is a decision too.
+
+[Q&A, "so the agent changes the game by itself?": only the game set, only after a paired verdict, only with every gate open, revertible with one DELETE. The agent set, where its permissions and ranges live, is never written by it.]
 -->
 
 ---

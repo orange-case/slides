@@ -98,6 +98,19 @@ table.wires th {
   gap: 0.6rem;
   align-items: stretch;
 }
+.pipe.pipe-4 {
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+.pipe.pipe-4 .st {
+  font-size: 1.1rem;
+}
+.pipe.pipe-4 .st span {
+  font-size: 0.9rem;
+}
+.pipe.pipe-4 .st code {
+  font-size: 0.75rem;
+}
 .pipe .st {
   display: flex;
   flex-direction: column;
