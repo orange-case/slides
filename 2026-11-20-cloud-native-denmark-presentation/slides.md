@@ -650,7 +650,9 @@ When the game ends, a different model takes over. Jev made the decisions in the 
 
 [click] How did it go. What to focus on next time. And concrete suggestions: which intervention, how much, and why.
 
-[click] Same telemetry in, same flag system around it. But this one only advises. It does not act. A human reads it.
+[click] Same telemetry in, same flag system around it. But this one only advises. It does not act. A human reads it. Whether anything else may act on it is a decision I come back to.
+
+[Needs inference.backend=claude and a working ANTHROPIC_API_KEY on the Pi. If the summary is empty (inference.used=none), show the screenshot.]
 
 [This is reflex and cortex in miniature, set it up for §4.]
 -->
@@ -779,13 +781,15 @@ The cortex decides what the organism is for. In my game, that is the objectives 
 
 [click] And the kill switch. One flag, and the agent stops. Immediately.
 
-[click] Mutation is still the last resort. But that does not mean we write every line. You can hand it to a dark factory, if you are brave enough.
+[click] Mutation is still the last resort. Remember the summary after the game: it suggests changes. Who acts on them? A human who reads it. Or the loop itself: suggestion, shadow experiment, promotion. A dark factory.
 
 [PAUSE]
 
-That is a decision too. A human one. Made on purpose.
+In my game that is one flag, experiments_enabled. Today it is off. That is a decision too. A human one. Made on purpose.
 
-[If asked "but the agent promotes new defaults from shadow experiments": it may change things only between games, never during one. The kill switch always wins. It never overwrites a value someone else set.]
+[Say it, do not show it: with experiments_enabled off, no proposer or agent.experiment spans exist on stage. What the audience can see is the retro.suggestion events on the agent.llm.retro span.]
+
+[If asked "but the agent promotes new defaults from shadow experiments": only with experiments on, only between games, only the game rules, behind an env gate and the kill switch, and one DELETE reverts it. It never writes its own limits.]
 -->
 
 ---
