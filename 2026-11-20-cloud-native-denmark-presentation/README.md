@@ -32,21 +32,28 @@ npm run dev
 | 25:00 | §5 The boundary must be portable | and where this goes: flags steering the telemetry itself |
 | 27:30 | Close, Q&A | |
 
-## Screenshots
+## Live panels and screenshots
 
-Slides that would otherwise embed Grafana or Jaeger show screenshots from `public/img/shots/`. Until a file
-exists, the slide shows a labelled placeholder. Capture them from the running stack right after a rehearsal game,
-so the panels have data:
+Slides that show Grafana or Jaeger (`<Shot name="…" />`) embed the **live** panel when the game stack answers at
+`192.168.8.2` (override with `VITE_DEMO_HOST`), with a red `● live` badge. Otherwise they show the screenshot from
+`public/img/shots/`, or a labelled placeholder. Press `v` to flip between live and screenshots by hand. The views
+are defined once in `shots.json`, for both the live panels and the screenshot script.
+
+Live panels only work when the deck itself is served over http: present from `npm run dev` (or a local build)
+on the venue network. The GitHub Pages copy is https, and browsers block an http iframe there, so it always shows
+the screenshots.
+
+Capture screenshots from the running stack, either now or for a past game window (epoch ms):
 
 ```bash
 npx playwright install chromium   # once
 GAME_HOST=http://192.168.8.2 FROM=now-30m npm run shots
-npm run shots -- talk-board jaeger-decide   # only some
+FROM=1794423300000 TO=1794424800000 npm run shots -- accel-all thresholds tempo
 ```
 
-Two shots are taken by hand (they need a login or a specific trace): `flag-audit.png` (Flagsmith, the agent's
-writes next to the operator's) and `retro.png` (Jaeger, an `agent.llm.retro` span). Save them into
-`public/img/shots/` under those names.
+The committed screenshots are from real games: 11 Nov 2026 19:55–20:20 (three real games: acceleration,
+thresholds, tempo), 12 Nov 2026 20:00–21:10 (agent decisions, interventions, flags) and 18 Nov 2026 14:50–15:30
+(Jaeger, which keeps only about a day of traces). `flag-audit.png` (Flagsmith) is taken by hand.
 
 ## CI and GitHub Pages
 

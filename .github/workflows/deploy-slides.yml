@@ -9,10 +9,12 @@ on:
       - main
     paths:
       - '20*/**'
+      - 'site/**'
       - '.github/workflows/deploy-slides.yml'
   pull_request:
     paths:
       - '20*/**'
+      - 'site/**'
       - '.github/workflows/deploy-slides.yml'
   workflow_dispatch:
 
@@ -50,21 +52,7 @@ jobs:
           done
 
       - name: Write the index page
-        run: |
-          set -euo pipefail
-          {
-            echo '<!doctype html><html lang="en"><head><meta charset="utf-8">'
-            echo '<meta name="viewport" content="width=device-width, initial-scale=1">'
-            echo '<title>orange-case slides</title>'
-            echo '<style>body{font-family:system-ui,sans-serif;max-width:40rem;margin:3rem auto;padding:0 1rem;line-height:1.6;background:#fff;color:#111}a{color:#0d9488}@media (prefers-color-scheme:dark){body{background:#111;color:#eee}a{color:#5eead4}}</style>'
-            echo '</head><body><h1>Slides</h1><ul>'
-            for dir in $(ls -d 20*/ | sort -r); do
-              dir="${dir%/}"
-              [ -d "gh-pages/$dir" ] || continue
-              echo "<li><a href=\"$dir/\">$dir</a></li>"
-            done
-            echo '</ul></body></html>'
-          } > gh-pages/index.html
+        run: node site/build-index.mjs gh-pages
 
       - name: Upload Pages artifact
         if: github.event_name != 'pull_request'

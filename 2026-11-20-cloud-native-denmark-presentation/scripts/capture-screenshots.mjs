@@ -1,57 +1,46 @@
-// Capture the Grafana / Jaeger screenshots the deck shows, from a running JoustMania stack.
+// Capture the Grafana / Jaeger screenshots the deck falls back to when the game stack is not reachable.
 //
-//   GAME_HOST=http://192.168.8.2 FROM=now-30m node scripts/capture-screenshots.mjs
+//   GAME_HOST=http://192.168.8.2 FROM=now-30m npm run shots
+//   npm run shots -- talk-board jaeger-decide      # only some
+//   FROM=1794423300000 TO=1794424800000 npm run shots -- accel-all   # a past game (epoch ms)
 //
+// The views are defined once, in shots.json (the live inlays in components/Shot.vue use the same file).
 // Writes public/img/shots/*.png. Run it right after a rehearsal game so the panels have data.
 import { chromium } from 'playwright-chromium'
-import { mkdir } from 'node:fs/promises'
+import { mkdir, readFile } from 'node:fs/promises'
 
 const HOST = process.env.GAME_HOST ?? 'http://192.168.8.2'
 const FROM = process.env.FROM ?? 'now-30m'
+const TO = process.env.TO ?? 'now'
+const absolute = /^\d+$/.test(FROM) && /^\d+$/.test(TO)
 const THEME = process.env.THEME ?? 'dark'
 const OUT = 'public/img/shots'
 
-// Single Grafana panels (d-solo) and whole dashboards (kiosk).
-const panel = (uid, id, extra = '') =>
-  `${HOST}/grafana/d-solo/${uid}?panelId=${id}&from=${FROM}&to=now&theme=${THEME}${extra}`
-const board = (uid) => `${HOST}/grafana/d/${uid}?kiosk&from=${FROM}&to=now&theme=${THEME}`
-
-const shots = [
-  // the game
-  { name: 'accel-all', url: panel('game-players', 37), w: 1600, h: 600 },
-  { name: 'thresholds', url: panel('game-players', 9), w: 1600, h: 600 },
-  { name: 'tempo', url: panel('game-players', 10), w: 1600, h: 600 },
-  // the talk overview
-  { name: 'talk-board', url: board('talk'), w: 1920, h: 1080 },
-  // the agent
-  { name: 'decide-outcome', url: panel('agent-operations', 6), w: 1600, h: 600 },
-  { name: 'decide-latency', url: panel('agent-operations', 7), w: 1600, h: 600 },
-  { name: 'genai-tokens', url: panel('agent-operations', 15), w: 1600, h: 600 },
-  // OpenFeature
-  { name: 'flag-evals', url: panel('feature-flags', 2), w: 1600, h: 600 },
-  { name: 'flag-writes', url: panel('feature-flags', 13), w: 1600, h: 600 },
-  { name: 'flagsmith-pushes', url: panel('feature-flags', 36), w: 1600, h: 600 },
-  // Jaeger: newest decisions
-  {
-    name: 'jaeger-decide',
-    url: `${HOST}/jaeger/search?service=agent&operation=agent.decide&lookback=1h&limit=20`,
-    w: 1920, h: 1080, settle: 4000,
-  },
-]
+const shots = JSON.parse(await readFile(new URL('../shots.json', import.meta.url), 'utf8'))
+const url = (s) => {
+  if (s.grafana === false) {
+    // Jaeger search: an absolute window replaces the lookback (start/end in microseconds).
+    if (!absolute) return `${HOST}${s.path}`
+    const path = s.path.replace(/&?lookback=[^&]*/, '')
+    return `${HOST}${path}&lookback=custom&start=${FROM}000&end=${TO}000`
+  }
+  const sep = s.path.includes('?') ? '&' : '?'
+  return `${HOST}${s.path}${sep}from=${FROM}&to=${TO}&theme=${THEME}`
+}
 
 await mkdir(OUT, { recursive: true })
 const browser = await chromium.launch()
 const only = process.argv.slice(2)
-for (const s of shots) {
-  if (only.length && !only.includes(s.name)) continue
+for (const [name, s] of Object.entries(shots)) {
+  if (only.length ? !only.includes(name) : s.capture === false || !s.path) continue
   const page = await browser.newPage({ viewport: { width: s.w, height: s.h }, deviceScaleFactor: 1 })
   try {
-    await page.goto(s.url, { waitUntil: 'networkidle', timeout: 30000 })
+    await page.goto(url(s), { waitUntil: 'networkidle', timeout: 30000 })
     await page.waitForTimeout(s.settle ?? 2500) // let panels finish their queries and animations
-    await page.screenshot({ path: `${OUT}/${s.name}.png` })
-    console.log('ok  ', s.name)
+    await page.screenshot({ path: `${OUT}/${name}.png` })
+    console.log('ok  ', name)
   } catch (e) {
-    console.log('FAIL', s.name, e.message.split('\n')[0])
+    console.log('FAIL', name, e.message.split('\n')[0])
   } finally {
     await page.close()
   }

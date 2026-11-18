@@ -702,17 +702,17 @@ class: text-center
 layout: default
 ---
 
-<div class="kicker">If the demo gods say no · the same thing, captured</div>
+<div class="kicker">The same views, without leaving the deck · live when the Pi answers</div>
 
 <div class="grid grid-cols-2 gap-4">
-  <Shot name="talk-board" caption="Grafana · Talk: Two Standards" />
-  <Shot name="jaeger-decide" caption="Jaeger · agent.decide" />
-  <Shot name="decide-outcome" caption="decide outcome split (span metrics)" />
-  <Shot name="decide-latency" caption="decide latency p95 by backend" />
+  <Shot name="talk-board" height="11.5rem" caption="Grafana · Talk: Two Standards" />
+  <Shot name="jaeger-decide" height="11.5rem" caption="Jaeger · agent.decide" />
+  <Shot name="decide-outcome" height="11.5rem" caption="decide outcome split (span metrics)" />
+  <Shot name="decide-latency" height="11.5rem" caption="decide latency p95 by backend" />
 </div>
 
 <!--
-[Backup slide. Skip it if the live demo worked.]
+[Live panels when 192.168.8.2 answers (badge "● live"), screenshots otherwise. Press v to flip by hand.]
 
 Same views as live: the stage dashboard, the decisions in Jaeger, the outcome split per backend, and the latency per backend.
 -->
