@@ -1,21 +1,28 @@
 name: Deploy Slides to GitHub Pages
 
+# Every deck lives in a directory named <YYYY-MM-DD>-<event>-presentation and is published at
+# https://orange-case.github.io/slides/<directory>/. A new deck needs no change here.
+
 on:
   push:
     branches:
       - main
     paths:
-      - 'cloud-native-linz-presentation/**'
-      - 'kubecon-cloudnativecon-europe-presentation/**'
+      - '20*/**'
+      - 'site/**'
+      - '.github/workflows/deploy-slides.yml'
+  pull_request:
+    paths:
+      - '20*/**'
+      - 'site/**'
+      - '.github/workflows/deploy-slides.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -28,30 +35,40 @@ jobs:
         with:
           node-version: '24'
 
-      - name: Build cloud-native-linz-presentation
-        working-directory: cloud-native-linz-presentation
+      - name: Build every deck
+        env:
+          REPO: ${{ github.event.repository.name }}
+          # Building needs no browser; playwright-chromium (PDF export, screenshots) would try to download one.
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
         run: |
-          npm ci
-          npm run build -- --base /kubecon-material/cloud-native-linz-presentation/
-          mkdir -p ../gh-pages/cloud-native-linz-presentation
-          cp -r dist/. ../gh-pages/cloud-native-linz-presentation/
+          set -euo pipefail
+          mkdir -p gh-pages
+          for dir in 20*/; do
+            dir="${dir%/}"
+            [ -f "$dir/package.json" ] || continue
+            echo "::group::$dir"
+            (cd "$dir" && npm ci && npm run build -- --base "/$REPO/$dir/")
+            mkdir -p "gh-pages/$dir"
+            cp -r "$dir/dist/." "gh-pages/$dir/"
+            echo "::endgroup::"
+          done
 
-      - name: Build kubecon-cloudnativecon-europe-presentation
-        working-directory: kubecon-cloudnativecon-europe-presentation
-        run: |
-          npm ci
-          npm run build -- --base /kubecon-material/kubecon-cloudnativecon-europe-presentation/
-          mkdir -p ../gh-pages/kubecon-cloudnativecon-europe-presentation
-          cp -r dist/. ../gh-pages/kubecon-cloudnativecon-europe-presentation/
+      - name: Write the index page
+        run: node site/build-index.mjs gh-pages
 
       - name: Upload Pages artifact
+        if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
           path: gh-pages
 
   deploy:
+    if: github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
