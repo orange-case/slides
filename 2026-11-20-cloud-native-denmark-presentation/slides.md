@@ -14,7 +14,6 @@ fonts:
 layout: center
 class: text-center
 ---
-
 <div class="kicker">Stop mutating · start adapting</div>
 
 <div class="statement">Two Standards Walk Into <span class="accent">an Agent</span></div>
@@ -28,7 +27,7 @@ class: text-center
 <!--
 [Walk on. Let the title sit.]
 
-[Timing, 30 min: §1 reframe 0:00 · about me 3:00 · §2 living systems 4:00 · §3 the experiment 7:00 (tech 8:30, live demo 13:30) · §4 reflex and cortex 21:00 · §5 portable boundary 25:00 · close 27:30 · Q&A]
+[Timing, about 27 min + Q&A: §1 reframe 0:00 · about me 2:30 · §2 living systems 3:15 · §3 the game and the curve 6:00 · architecture 8:00 · LIVE DEMO 10:00 (5 beats, 6 min) · punchline, pipeline, control surface 16:00 · summary, pattern 18:30 · §4 reflex and cortex 19:45 · §5 portable boundary 23:30 · close 25:30 · Q&A from about 27:00. Slot 10:25–11:00.]
 -->
 
 ---
@@ -284,8 +283,8 @@ class: px-8
 <div class="text-xl mt-8 space-y-3 opacity-80">
   <div v-click>A PS Move party game, used at KubeCon for high-density OpenTelemetry data</div>
   <div v-click>Refactored into microservices · gRPC · multiple languages</div>
-  <div v-click>An agent on top — it does not play, it is the <span class="accent">game master</span></div>
-  <div v-click class="opacity-60">Players are simulated (not enough real people around)</div>
+  <div v-click>An agent on top. It does not play: it is the <span class="accent">game master</span></div>
+  <div v-click class="opacity-60">Today: real controllers, real players. In rehearsal: simulated ones.</div>
 </div>
 
 ::right::
@@ -305,7 +304,7 @@ I wanted to see what happens when something else takes that seat. So I tried it 
 
 [click] On top of it sits an agent. The agent does not play. It is the game master.
 
-[click] In my tests, the players are simulated. I rarely have enough real people around.
+[click] Today the players are real, holding real controllers. In my rehearsals they are simulated; I rarely have enough people around.
 -->
 
 ---
@@ -421,6 +420,8 @@ clicks: 4
 
 <Arch after :step="$clicks" />
 
+<div class="text-sm text-center opacity-60 mt-2"><b>Jev</b>: a hosted judge model from TypeSafe. It scores options we describe in words; it does not write text. About 0.3 s per answer.</div>
+
 <!--
 Here is what I added. Same layout. One new seat: the agent. Go, with its own OTLP receiver.
 
@@ -428,7 +429,7 @@ And the OpenFeature stack grew up. It is no longer files. It knows every flag, i
 
 [click] OTel in. The Collector fans out: one more exporter, no new instrumentation. The agent sees exactly what Grafana sees. Metrics in a hundred milliseconds to a second, spans later.
 
-[click] It decides, through a backend: plain rules, Jev, or Claude. And the decision itself is telemetry: gen_ai spans, back to the same Collector.
+[click] It decides, through a backend: plain rules, Jev, or Claude. Jev is a hosted judge model from TypeSafe: we describe the options in words, it scores them. It does not write text, and it answers in about a third of a second. And the decision itself is telemetry: gen_ai spans, back to the same Collector.
 
 [click] OpenFeature out. The agent writes a flag, labelled writer=agent, scoped to one game. The game picks it up through OpenFeature. No redeploy.
 
@@ -455,10 +456,79 @@ The game senses through OpenTelemetry. The agent decides. It acts through a flag
 -->
 
 ---
+layout: two-cols
+class: px-8
+---
+
+<div class="kicker">Live · 192.168.8.2</div>
+
+# Let's play. 🎮
+
+<div class="demo-beats demo-5 mt-6">
+  <div>👀 <b>observe</b> a decision · open its span</div>
+  <div>🎚️ <b>ambient → standard</b> · it may shield</div>
+  <div>📏 <b>threshold</b> · act → held</div>
+  <div>🛑 <b>kill switch</b></div>
+  <div>📉 <b>degrade</b>, never stall</div>
+</div>
+
+::right::
+
+<div class="mt-16">
+<Shot name="talk-board" caption="Grafana · Talk: Two Standards" />
+</div>
+
+<!--
+[LIVE DEMO, about 6 minutes, five beats. Operator script: JoustMania docs/talk/two-standards-runbook.md.]
+
+[Before: talk-stage.sh reset, then `backend.sh jev` and `setflag agent interventions_allowed ambient`, a real game running. The board on the right is live while the Pi answers; press v for the screenshot.]
+
+1. Observe (runbook beat 2): a green act or grey noop row on the dashboard. Click its trace link, open agent.decide in Jaeger: rationale, confidence, threshold, the two chat jev-latest children. This replaces the span slide.
+
+2. Ambient to standard: on ambient the agent may only use sound and LEDs. When it wants to protect the weakest player, `setflag agent interventions_allowed standard`. It shields (white LED, Shield badge). A few seconds later back to `ambient`. If it does not show: the backup magic-move slide.
+
+3. Threshold (beat 3a): `backend.sh jev-threshold strict`, the near-threshold rows turn amber held. Back with `backend.sh jev-threshold gate`.
+
+4. Kill switch (beat 5): `agent-killswitch.sh off`, the feed goes silent, the game keeps playing. `on` again.
+
+5. Degrade (beat 7, option B): `setflag agent decision.jev.base_url blackhole`, rows become jev to rules with fallback_reason=timeout, the game never waits. Then `default`.
+
+[After every flip: `backend.sh status`, so the audience sees the flag move, not only its effect.]
+-->
+
+---
 layout: center
 ---
 
-<div class="kicker">One decision · every step is behind a flag</div>
+<div class="statement">
+Its judgment did not change.
+</div>
+
+<div v-click class="statement mt-6">
+Its <span class="accent">authority</span> did.
+</div>
+
+<div v-click class="text-2xl mt-12 opacity-60">
+No code change. No review. No redeploy.
+</div>
+
+<!--
+[Right after the demo. Point back at beat 2.]
+
+You saw it. When I raised the permission, the agent shielded. When I lowered it, it stopped.
+
+Its judgment did not change.
+
+[click] Its authority did.
+
+[click] No code change. No review. No redeploy.
+-->
+
+---
+layout: center
+---
+
+<div class="kicker">What you just saw · every step is behind a flag</div>
 
 <div class="pipe">
   <div class="st"><b>📡 signals</b><span>OTLP metrics · 0.1–1 s</span></div>
@@ -479,7 +549,7 @@ layout: center
 </div>
 
 <!--
-Let me zoom into one decision. Every box here has a flag on it.
+Let me name what you just saw. One decision, and every box has a flag on it. [Keep this quick: the audience saw each step live.]
 
 Signals come in.
 
@@ -522,10 +592,12 @@ layout: center
 
 <div v-click class="text-2xl text-center mt-6">The agent <span class="warn">never</span> writes its own limits.</div>
 
+<div v-click class="text-lg text-center mt-2 opacity-75">On a conflict, the human wins. The kill switch included.</div>
+
 <div v-click class="mt-4">
 
 ```python
-# in the game loop — the agent never touches this code
+# in the game loop: the agent never touches this code
 level = client.get_string_value("interventions_allowed", "")
 ```
 
@@ -538,183 +610,11 @@ The agent writes interventions, for one game. They die with that game. Everythin
 
 [click] The agent never writes its own limits. The OpenFeature stack enforces it: every write carries a writer label, every value is checked against declared bounds. An unknown variant is a 422, not a surprise.
 
+[click] And on a conflict, the human side wins. I can change any of these in the flag UI, and that value holds, the kill switch too.
+
 [click] And in the game, this line never changes. The behavior does.
--->
 
----
-layout: center
-class: big-code
----
-
-<div class="kicker">Weakest player · field shrinking · agent wants to shield</div>
-
-````md magic-move {lines: true}
-```json
-{
-  "interventions_allowed": {
-    "state": "ENABLED",
-    "variants": {
-      "ambient": "ambient",
-      "standard": "standard",
-      "full": "full"
-    },
-    "defaultVariant": "ambient"
-  }
-}
-```
-```json
-{
-  "interventions_allowed": {
-    "state": "ENABLED",
-    "variants": {
-      "ambient": "ambient",
-      "standard": "standard",
-      "full": "full"
-    },
-    "defaultVariant": "standard"
-  }
-}
-```
-```json
-{
-  "interventions_allowed": {
-    "state": "ENABLED",
-    "variants": {
-      "ambient": "ambient",
-      "standard": "standard",
-      "full": "full"
-    },
-    "defaultVariant": "ambient"
-  }
-}
-```
-````
-
-<div class="ladder">
-  <div><b>ambient</b><span>sound · LED</span></div>
-  <div><b>standard</b><span>+ grant shield</span></div>
-  <div><b>full</b><span>+ eliminate · revive · end game</span></div>
-</div>
-
-<!--
-My agent saw the weakest player. The field was shrinking. It wanted to shield that player.
-
-It was not allowed to.
-
-[PAUSE]
-
-By default, the agent may only use sound and lights. Granting a shield is one level up. That permission is a flag. [click] I raised it to standard. The agent shielded the player. [click] A few seconds later, I switched it back.
--->
-
----
-layout: center
----
-
-<div class="statement">
-Its judgment did not change.
-</div>
-
-<div v-click class="statement mt-6">
-Its <span class="accent">authority</span> did.
-</div>
-
-<div v-click class="text-2xl mt-12 opacity-60">
-No code change. No review. No redeploy.
-</div>
-
-<!--
-Its judgment did not change.
-
-[click] Its authority did.
-
-[click] No code change. No review. No redeploy.
--->
-
----
-layout: center
-class: mid-code
----
-
-<div class="kicker">What a decision leaves behind · one span</div>
-
-```yaml
-agent.decide                                   # service: agent
-  gen_ai.agent.name:           game-master
-  gen_ai.conversation.id:      <game id>
-  gen_ai.request.model:        jev-latest
-  decide.backend:              jev
-  decide.outcome:              act      # act·held·noop·fallback·discarded
-  decide.confidence:           0.72
-  decide.act_confidence_threshold: 0.60       # source: jev
-  decide.rationale:            "two players near the death line"
-  └─ event gen_ai.evaluation.result: "0.720 >= 0.600"
-  └─ chat jev-latest    jev.stage=intervention   jev.gate.p_yes=0.72
-  └─ chat jev-latest    jev.stage=details
-```
-
-<div class="footnote">
-Attribute values illustrative. OTel GenAI semantic conventions are still in Development status.
-</div>
-
-<!--
-And every decision is a span. Not a log line. A span, with the why.
-
-Which model, which backend. The outcome. The confidence, the threshold it was compared with, and where that threshold came from. The rationale, in words. And the model calls underneath as child spans, following the GenAI semantic conventions.
-
-So when someone asks "why did the agent shield that player": open the trace. That is the audit.
-
-[Do NOT call the OTel GenAI conventions stable — still Development status.]
--->
-
----
-layout: center
-class: text-center
----
-
-<div class="kicker">Live · 192.168.8.2</div>
-
-<div class="statement">Let's play. 🎮</div>
-
-<div class="demo-beats mt-10">
-  <div>👀 observe a decision</div>
-  <div>🔀 rules → Jev</div>
-  <div>📏 threshold: act → held</div>
-  <div>🛟 Jev → Claude</div>
-  <div>🛑 kill switch</div>
-  <div>↩️ rollback</div>
-  <div>📉 degrade, never stall</div>
-  <div>📝 the summary</div>
-</div>
-
-<!--
-[LIVE DEMO, about 7 minutes. Operator script: JoustMania docs/talk/two-standards-runbook.md, beats 1–8.]
-
-[Before: talk-stage.sh reset, session baseline decision.backend=rules, a real game running.]
-
-[Tabs: dashboard http://192.168.8.2/ (Agent tab), Grafana http://192.168.8.2/grafana/d/talk?kiosk, Jaeger agent.decide search, Flagsmith, ssh terminal.]
-
-[After every flip: agent-backend.sh status, so the audience sees the flag move, not only its effect.]
-
-[If Bluetooth fails: fallback stack with shadow games / demo_driver.py. If the network fails: that IS beat 7. Backup screenshots are on the next slide.]
--->
-
----
-layout: default
----
-
-<div class="kicker">The same views, without leaving the deck · live when the Pi answers</div>
-
-<div class="grid grid-cols-2 gap-4">
-  <Shot name="talk-board" height="11.5rem" caption="Grafana · Talk: Two Standards" />
-  <Shot name="jaeger-decide" height="11.5rem" caption="Jaeger · agent.decide" />
-  <Shot name="decide-outcome" height="11.5rem" caption="decide outcome split (span metrics)" />
-  <Shot name="decide-latency" height="11.5rem" caption="decide latency p95 by backend" />
-</div>
-
-<!--
-[Live panels when 192.168.8.2 answers (badge "● live"), screenshots otherwise. Press v to flip by hand.]
-
-Same views as live: the stage dashboard, the decisions in Jaeger, the outcome split per backend, and the latency per backend.
+[Q&A, "but the agent promotes new defaults": promotion writes only the game flag set (game rules like sensitivity or spawn protection), as a `real` overlay, behind an env gate AND the kill switch, between games, and one DELETE reverts it. It never writes the agent set, where every limit above lives. For this talk it is off (`experiments_enabled` stays off).]
 -->
 
 ---
@@ -753,49 +653,6 @@ When the game ends, a different model takes over. Jev made the decisions in the 
 [click] Same telemetry in, same flag system around it. But this one only advises. It does not act. A human reads it.
 
 [This is reflex and cortex in miniature, set it up for §4.]
--->
-
----
-layout: two-cols
-class: px-8
----
-
-<div class="kicker">Humans see every write</div>
-
-# One place to see every change
-
-<div class="text-lg mt-6 space-y-3 opacity-90">
-  <div><b>every write</b> · agent, operator, scripts · with who and when</div>
-  <div><b>human edits</b> · change a flag in the UI → an ordinary, validated write</div>
-  <div v-click><b>conflict</b> · the human wins · <span class="warn">kill switch included</span></div>
-  <div v-click><b>offline</b> · never on the game path · the Pi plays without it</div>
-</div>
-
-<div v-click class="text-lg mt-6 opacity-70">Evaluation stays local and boring. The management UI is a writer and a window.</div>
-
-::right::
-
-<div class="mt-16">
-<Shot name="flag-audit" caption="the agent's writes next to mine · Flagsmith here" />
-</div>
-<div class="mt-4">
-<Shot name="flag-writes" caption="Grafana · flag writes / min, by writer and result" />
-</div>
-
-<!--
-One more piece. Where do I, the human, look?
-
-Every accepted write is mirrored to a flag management UI. The agent's interventions, my threshold flips, the scripts. So there is one place that shows what changed, who changed it, when. I use Flagsmith for that.
-
-And it works the other way. I change a flag there, and it comes back as an ordinary, validated write.
-
-[click] On a conflict, the human side wins. Also for the kill switch. If I hit it there, it holds.
-
-[click] And it is never on the path of a game. It is SaaS; a booth has bad WiFi. The game plays without it.
-
-[click] Evaluation stays local and boring. The UI is a writer, and a window.
-
-[Show it live if time allows: the agent's game-scoped writes appearing as identity overrides in Flagsmith.]
 -->
 
 ---
@@ -849,7 +706,7 @@ layout: center
 
 <div class="flex items-center justify-center gap-8 text-3xl">
   <div class="px-6 py-4 rounded-xl border-2" style="border-color: var(--line)">Cortex<div class="text-base opacity-60">deliberate</div></div>
-  <div class="opacity-50">— practice →</div>
+  <div class="opacity-50">practice →</div>
   <div class="px-6 py-4 rounded-xl border-2" style="border-color: var(--accent)">Reflex<div class="text-base opacity-60">automatic</div></div>
 </div>
 
@@ -968,13 +825,17 @@ MCP · A2A · Open Responses
 </div>
 </div>
 
-<div v-click="2" class="text-2xl mt-14">
+<div v-click="2" class="text-xl mt-10 opacity-80">
+<code>ambient</code> · <code>standard</code> · <code>full</code> is <span class="warn">my</span> vocabulary. Nobody else's agent speaks it.
+</div>
+
+<div v-click="3" class="text-2xl mt-8">
 OpenTelemetry and OpenFeature happened <span class="accent">at the same table</span>.<br>
 <span class="opacity-70">This one can too.</span>
 </div>
 
 <div class="footnote">
-Checked 14 Oct 2026. MCP and A2A are AAIF projects; Open Responses provides a specification and acceptance tests. OTel GenAI semantic conventions are still in Development status.
+Checked 18 Nov 2026. MCP, A2A and Open Responses are AAIF projects (Open Responses since 22 Oct 2026, with acceptance tests). OTel GenAI semantic conventions: still Development, no tagged release.
 </div>
 
 <!--
@@ -984,9 +845,232 @@ That boundary has to live somewhere. The wires are getting standardized. MCP, A2
 
 [click] The rules are not. What an agent may decide, with what evidence, and how to undo it, lives inside one vendor's control plane. If that joint is proprietary, you cannot move your boundaries when you replace the agent.
 
+[click] Remember the six flags? ambient, standard, full. That is my vocabulary. Nobody else's agent understands it. That is the gap.
+
 [click] We have been here before. OpenTelemetry and OpenFeature happened because people from many companies sat at the same table. This one can too.
 
-[Do NOT call the OTel GenAI conventions stable — still Development status.]
+[Do NOT call the OTel GenAI conventions stable: still Development, now in their own repo with no tagged release. Open Responses joined the AAIF on 22 Oct 2026.]
+-->
+
+---
+layout: center
+---
+
+<div class="statement">
+What part does the <span class="accent">human</span> play in your system?
+</div>
+
+<div v-click class="statement mt-8">
+Which <span class="warn">bottleneck</span> do you want to see moved?
+</div>
+
+<!--
+So, what part does the human play in your system? [click] And which bottleneck do you want to see moved?
+
+[PAUSE]
+-->
+
+---
+layout: center
+class: text-center
+---
+
+# Thank you
+
+<div class="mt-8 opacity-70 text-xl">
+  <div>The agent decides. We decide what it may decide.</div>
+</div>
+
+<div class="mt-8 text-lg opacity-60">Next: OpenFeature as a control plane for OpenTelemetry. Flags steering the senses.</div>
+
+<div class="mt-2 text-sm opacity-50">orange-case.github.io/slides</div>
+
+<div class="mt-8 opacity-50">Simon Schrottner · OpenFeature · CNCF · AAIF</div>
+
+<!--
+Thank you.
+
+[If time allows, one sentence: the same two standards work the other way round too, flags steering the telemetry itself. That was my KubeCon talk. The backup slides have it.]
+
+[END]
+-->
+
+---
+layout: center
+class: text-center
+---
+
+<div class="kicker">Backup</div>
+
+<div class="statement opacity-60">For questions</div>
+
+<!--
+[Backup slides: the permission flip as a magic move (fallback for demo beat 2), the decide span, the live views, the audit view, and where this goes next.]
+-->
+
+---
+layout: center
+class: big-code
+---
+
+<div class="kicker">Weakest player · field shrinking · agent wants to shield</div>
+
+````md magic-move {lines: true}
+```json
+{
+  "interventions_allowed": {
+    "state": "ENABLED",
+    "variants": {
+      "ambient": "ambient",
+      "standard": "standard",
+      "full": "full"
+    },
+    "defaultVariant": "ambient"
+  }
+}
+```
+```json
+{
+  "interventions_allowed": {
+    "state": "ENABLED",
+    "variants": {
+      "ambient": "ambient",
+      "standard": "standard",
+      "full": "full"
+    },
+    "defaultVariant": "standard"
+  }
+}
+```
+```json
+{
+  "interventions_allowed": {
+    "state": "ENABLED",
+    "variants": {
+      "ambient": "ambient",
+      "standard": "standard",
+      "full": "full"
+    },
+    "defaultVariant": "ambient"
+  }
+}
+```
+````
+
+<div class="ladder">
+  <div><b>ambient</b><span>sound · LED</span></div>
+  <div><b>standard</b><span>+ grant shield</span></div>
+  <div><b>full</b><span>+ eliminate · revive · end game</span></div>
+</div>
+
+<!--
+[BACKUP: fallback for demo beat 2 if the shield does not show live.]
+
+My agent saw the weakest player. The field was shrinking. It wanted to shield that player.
+
+It was not allowed to.
+
+[PAUSE]
+
+By default, the agent may only use sound and lights. Granting a shield is one level up. That permission is a flag. [click] I raised it to standard. The agent shielded the player. [click] A few seconds later, I switched it back.
+-->
+
+---
+layout: center
+class: mid-code
+---
+
+<div class="kicker">What a decision leaves behind · one span</div>
+
+```yaml
+agent.decide                                   # service: agent
+  gen_ai.agent.name:           game-master
+  gen_ai.conversation.id:      <game id>
+  gen_ai.request.model:        jev-latest
+  decide.backend:              jev
+  decide.outcome:              act      # act·held·noop·fallback·discarded
+  decide.confidence:           0.72
+  decide.act_confidence_threshold: 0.60       # source: jev
+  decide.rationale:            "two players near the death line"
+  └─ event gen_ai.evaluation.result: "0.720 >= 0.600"
+  └─ chat jev-latest    jev.stage=intervention   jev.gate.p_yes=0.72
+  └─ chat jev-latest    jev.stage=details
+```
+
+<div class="footnote">
+Attribute values illustrative. OTel GenAI semantic conventions are still in Development status.
+</div>
+
+<!--
+And every decision is a span. Not a log line. A span, with the why.
+
+Which model, which backend. The outcome. The confidence, the threshold it was compared with, and where that threshold came from. The rationale, in words. And the model calls underneath as child spans, following the GenAI semantic conventions.
+
+So when someone asks "why did the agent shield that player": open the trace. That is the audit.
+
+[Do NOT call the OTel GenAI conventions stable: still Development.]
+-->
+
+---
+layout: default
+---
+
+<div class="kicker">The same views, without leaving the deck · live when the Pi answers</div>
+
+<div class="grid grid-cols-2 gap-4">
+  <Shot name="talk-board" height="11.5rem" caption="Grafana · Talk: Two Standards" />
+  <Shot name="jaeger-decide" height="11.5rem" caption="Jaeger · agent.decide" />
+  <Shot name="decide-outcome" height="11.5rem" caption="decide outcome split (span metrics)" />
+  <Shot name="decide-latency" height="11.5rem" caption="decide latency p95 by backend" />
+</div>
+
+<!--
+[Live panels when 192.168.8.2 answers (badge "● live"), screenshots otherwise. Press v to flip by hand.]
+
+Same views as live: the stage dashboard, the decisions in Jaeger, the outcome split per backend, and the latency per backend.
+-->
+
+---
+layout: two-cols
+class: px-8
+---
+
+<div class="kicker">Humans see every write</div>
+
+# One place to see every change
+
+<div class="text-lg mt-6 space-y-3 opacity-90">
+  <div><b>every write</b> · agent, operator, scripts · with who and when</div>
+  <div><b>human edits</b> · change a flag in the UI → an ordinary, validated write</div>
+  <div v-click><b>conflict</b> · the human wins · <span class="warn">kill switch included</span></div>
+  <div v-click><b>offline</b> · never on the game path · the Pi plays without it</div>
+</div>
+
+<div v-click class="text-lg mt-6 opacity-70">Evaluation stays local and boring. The management UI is a writer and a window.</div>
+
+::right::
+
+<div class="mt-16">
+<Shot name="flag-audit" caption="the agent's writes next to mine · Flagsmith here" />
+</div>
+<div class="mt-4">
+<Shot name="flag-writes" caption="Grafana · flag writes / min, by writer and result" />
+</div>
+
+<!--
+One more piece. Where do I, the human, look?
+
+Every accepted write is mirrored to a flag management UI. The agent's interventions, my threshold flips, the scripts. So there is one place that shows what changed, who changed it, when. I use Flagsmith for that.
+
+And it works the other way. I change a flag there, and it comes back as an ordinary, validated write.
+
+[click] On a conflict, the human side wins. Also for the kill switch. If I hit it there, it holds.
+
+[click] And it is never on the path of a game. It is SaaS; a booth has bad WiFi. The game plays without it.
+
+[click] Evaluation stays local and boring. The UI is a writer, and a window.
+
+[Show it live if time allows: the agent's game-scoped writes appearing as identity overrides in Flagsmith.]
 -->
 
 ---
@@ -1063,41 +1147,4 @@ class: text-center
 And if the knobs are named after semantic conventions, that control surface is vendor-neutral too. Same as the boundary. Same table.
 
 [click] That was my KubeCon talk: OpenFeature as a control plane for OpenTelemetry. Same two standards, pointed the other way.
--->
-
----
-layout: center
----
-
-<div class="statement">
-What part does the <span class="accent">human</span> play in your system?
-</div>
-
-<div v-click class="statement mt-8">
-Which <span class="warn">bottleneck</span> do you want to see moved?
-</div>
-
-<!--
-So, what part does the human play in your system? [click] And which bottleneck do you want to see moved?
-
-[PAUSE]
--->
-
----
-layout: center
-class: text-center
----
-
-# Thank you
-
-<div class="mt-8 opacity-70 text-xl">
-  <div>The agent decides. We decide what it may decide.</div>
-</div>
-
-<div class="mt-10 opacity-50">Simon Schrottner · OpenFeature · CNCF · AAIF</div>
-
-<!--
-Thank you.
-
-[END]
 -->
