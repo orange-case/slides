@@ -641,8 +641,12 @@ class: px-8
 
 ::right::
 
-<div class="mt-20">
-<Shot name="retro" caption="Jaeger · agent.llm.retro · the post-game summary" />
+<div class="retro-card mt-14">
+  <div class="kicker">agent.llm.retro · claude-opus-5-5 · 6.8 s · real game, 18 Nov</div>
+  <div class="assess">"The game was far too short: it ended at 15s against a 120s duration goal, with zero interventions after the player spiked past the threshold."</div>
+  <div class="focus"><code>session_focus</code> endurance</div>
+  <div class="sugg"><code>grant_shield</code> ↑ <span>crossed near-death at 10.17 s, out at 10.71 s, zero shield energy</span></div>
+  <div class="sugg" v-click><code>adjust_player_sensitivity</code> ↑ <span>"The agent predicted the player would survive with a sensitivity nudge but never acted."</span></div>
 </div>
 
 <!--
@@ -652,7 +656,9 @@ When the game ends, a different model takes over. Jev made the decisions in the 
 
 [click] Same telemetry in, same flag system around it. But this one only advises. It does not act. A human reads it. Whether anything else may act on it is a decision I come back to.
 
-[Needs inference.backend=claude and a working ANTHROPIC_API_KEY on the Pi. If the summary is empty (inference.used=none), show the screenshot.]
+[click] And my favourite line from a real game this week: "the agent predicted the player would survive with a sensitivity nudge, but never acted". The slow model holding the fast one to account.
+
+[The card quotes the real agent.llm.retro span of an 18 Nov game (trace 917df782…). Live: needs inference.backend=claude (flag service, persisted; re-set after talk-stage.sh reset, the baseline is stub) and a working ANTHROPIC_API_KEY. If the live summary is empty (inference.used=none) or 401, stay on this card.]
 
 [This is reflex and cortex in miniature, set it up for §4.]
 -->

@@ -164,3 +164,18 @@ table.wires th {
   gap: 0.5rem;
   font-size: 1.05rem;
 }
+
+/* The post-game summary, quoted from a real agent.llm.retro span */
+.retro-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1rem 1.2rem;
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+  font-size: 0.95rem;
+}
+.retro-card .kicker { margin-bottom: 0; font-size: 0.65rem; }
+.retro-card .assess { font-style: italic; }
+.retro-card .focus { opacity: 0.7; }
+.retro-card .sugg span { display: block; opacity: 0.7; font-size: 0.85rem; }
