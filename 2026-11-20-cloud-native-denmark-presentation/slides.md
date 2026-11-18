@@ -1,9 +1,9 @@
 ---
 theme: default
-title: "Stop Mutating, Start Adapting"
+title: "Two Standards Walk Into an Agent"
 info: |
-  Giving Systems Reflexes with Open Standards. One takeaway: the agent decides, we decide what it may decide,
-  and that boundary has to be portable.
+  Runtime Agent Control with OpenTelemetry and OpenFeature. Cloud Native Denmark, Copenhagen, 20 Nov 2026, 30 minutes.
+  One takeaway: the agent decides, we decide what it may decide, and that boundary has to be portable.
 author: Simon Schrottner
 colorSchema: auto
 transition: fade
@@ -15,18 +15,20 @@ layout: center
 class: text-center
 ---
 
-<div class="statement">Stop Mutating, <span class="accent">Start Adapting</span></div>
+<div class="kicker">Stop mutating · start adapting</div>
+
+<div class="statement">Two Standards Walk Into <span class="accent">an Agent</span></div>
 
 <div class="text-2xl mt-4 opacity-80">
-  Giving Systems Reflexes with Open Standards
+  Runtime Agent Control with OpenTelemetry and OpenFeature
 </div>
 
-<div class="text-lg mt-3 opacity-50">OpenTelemetry · OpenFeature</div>
-
-<div class="mt-12 opacity-60">Simon Schrottner</div>
+<div class="mt-12 opacity-60">Simon Schrottner · Cloud Native Denmark · Copenhagen</div>
 
 <!--
 [Walk on. Let the title sit.]
+
+[Timing, 30 min: §1 reframe 0:00 · about me 3:00 · §2 living systems 4:00 · §3 the experiment 7:00 (tech 8:30, live demo 13:30) · §4 reflex and cortex 21:00 · §5 portable boundary 25:00 · close 27:30 · Q&A]
 -->
 
 ---
@@ -271,19 +273,28 @@ A human watches the dashboard. Decides what the signal means. Sets the flag.
 -->
 
 ---
-layout: center
+layout: two-cols
+class: px-8
 ---
 
 <div class="kicker">§3 · The experiment</div>
 
 # A system I already trust 🎮
 
-<div class="text-2xl mt-8 space-y-3 opacity-80">
+<div class="text-xl mt-8 space-y-3 opacity-80">
   <div v-click>A PS Move party game, used at KubeCon for high-density OpenTelemetry data</div>
   <div v-click>Refactored into microservices · gRPC · multiple languages</div>
   <div v-click>An agent on top — it does not play, it is the <span class="accent">game master</span></div>
   <div v-click class="opacity-60">Players are simulated (not enough real people around)</div>
 </div>
+
+::right::
+
+<div class="mt-16">
+<JoustGallery />
+</div>
+
+<div class="text-xs opacity-50 mt-6 text-right">Photos: Brent Knepper, Sara Bobo, Die Gute Fabrik · the original J.S. Joust</div>
 
 <!--
 §3 The experiment
@@ -295,6 +306,135 @@ I wanted to see what happens when something else takes that seat. So I tried it 
 [click] On top of it sits an agent. The agent does not play. It is the game master.
 
 [click] In my tests, the players are simulated. I rarely have enough real people around.
+-->
+
+---
+layout: center
+clicks: 4
+---
+
+<div class="kicker">How you lose · one player, one minute</div>
+
+<AccelCurve :step="$clicks" />
+
+<div class="text-lg text-center opacity-70 mt-2">
+  <span v-if="$clicks < 2">Move too fast, and you are out.</span>
+  <span v-else-if="$clicks < 4">Faster music → you may move more.</span>
+  <span v-else>Same swing. Different tempo. <span class="warn">Out.</span></span>
+</div>
+
+<!--
+The rules fit in one sentence. Hold the controller, keep it steady, knock the others. Move too fast and you are out.
+
+What the game sees is this line. Acceleration, about ten times a second, per controller.
+
+[click] Two lines matter. Warning: the controller rumbles. Death: you are out.
+
+[click] And the lines are not fixed. When the music speeds up, both lines go up. You may move more. That is the part people love: the music tells you how brave you can be.
+
+[click] Now watch the agent. Its goal is "accelerate", get to a result. So it does not speed the music up. It slows it down. The lines drop.
+
+[click] Same swing as before. Before, a rumble. Now, out.
+
+The agent never touched the player. It touched one number. The tempo.
+
+[Data: MEDIUM sensitivity, warning 1.6→1.9 g, death 1.8→2.8 g between music 1.0× and 1.3×. The trace is illustrative; the real panel is next.]
+-->
+
+---
+layout: two-cols
+class: px-8
+---
+
+<div class="kicker">The game's physics is a flag</div>
+
+# Tempo is a lever
+
+<div class="small-code">
+
+```python
+music   = 1.0 + 0.3 * i        # i ∈ [0, 1]
+warning = lerp(SLOW_WARNING[s], FAST_WARNING[s], i)
+death   = lerp(SLOW_MAX[s],     FAST_MAX[s],     i)
+```
+
+</div>
+
+<div class="text-sm opacity-70 mt-4">
+
+| sensitivity: medium | 1.0× | 1.3× |
+|---|---|---|
+| warning | 1.6 g | 1.9 g |
+| death | 1.8 g | 2.8 g |
+
+</div>
+
+<div v-click class="text-lg mt-4">
+Agent: <code>adjust_music_tempo</code> · <code>set_pacing_profile</code><br>
+<span class="opacity-60">a game-scoped flag, ramped, never per frame</span>
+</div>
+
+::right::
+
+<div class="mt-12">
+<LoopVideo name="acceleration-spike" class="h-52 object-cover" />
+<div class="text-xs opacity-55 text-center mt-1">an acceleration spike · from the KubeCon EU talk</div>
+</div>
+<div class="mt-3">
+<Shot name="thresholds" caption="Grafana · effective thresholds follow the tempo" />
+</div>
+
+<!--
+For the engineers. The thresholds are a linear interpolation between a slow and a fast table, per sensitivity level. Intensity i goes from 0 to 1, music goes from 1.0 to 1.3.
+
+[click] That is why tempo is the most interesting lever the agent has. One flag value, and the whole game gets harder or easier, for everyone. It is written per game, ramped over a few seconds, and the coordinator reads it every frame.
+
+On the right: the real thing, from Grafana. Every controller's acceleration, the thresholds moving with the music.
+-->
+
+---
+layout: center
+---
+
+<div class="kicker">How it used to be</div>
+
+<Arch />
+
+<!--
+This is how the game ran at KubeCon. Not a perfect service map, but the shape is right.
+
+Top: the game. Controllers over Bluetooth, a Rust HID reader, the controller manager, the game coordinator that owns the rules, audio and the dashboard. gRPC between them, three languages.
+
+Middle: the two standards. An OpenFeature stack serves flags to the services; back then the flags came from files. And everything sends OTLP to a Collector, into Jaeger and VictoriaMetrics, into Grafana.
+
+And the loop? [point at the orange path] That is me. I look at the dashboards. Minutes later I decide. I change a file. Restart.
+
+Senses: yes. Muscles: yes. In between: a person.
+-->
+
+---
+layout: center
+clicks: 4
+---
+
+<div class="kicker">Adding a seat · same senses, same muscles</div>
+
+<Arch after :step="$clicks" />
+
+<!--
+Here is what I added. Same layout. One new seat: the agent. Go, with its own OTLP receiver.
+
+And the OpenFeature stack grew up. It is no longer files. It knows every flag, its allowed values, its bounds, and who wrote what. Which pieces I use for that does not matter here, the services only ever talk OpenFeature.
+
+[click] OTel in. The Collector fans out: one more exporter, no new instrumentation. The agent sees exactly what Grafana sees. Metrics in a hundred milliseconds to a second, spans later.
+
+[click] It decides, through a backend: plain rules, Jev, or Claude. And the decision itself is telemetry: gen_ai spans, back to the same Collector.
+
+[click] OpenFeature out. The agent writes a flag, labelled writer=agent, scoped to one game. The game picks it up through OpenFeature. No redeploy.
+
+[click] And where did I go? I moved. I no longer close the loop. I set the boundary: the goal, the limits and the kill switch.
+
+[In JoustMania the OpenFeature stack is flagd (evaluation), a flag service (registry, bounds, writer labels, game scopes, flagd sync) and Flagsmith (audit and human edits). Only name them if asked.]
 -->
 
 ---
@@ -318,21 +458,71 @@ The game senses through OpenTelemetry. The agent decides. It acts through a flag
 layout: center
 ---
 
-<div class="kicker">Under the hood · one loop</div>
+<div class="kicker">One decision · every step is behind a flag</div>
 
-<div class="tloop">
-  <div class="tnode">🎮 <b>Game services</b><span>gRPC · polyglot microservices</span></div>
-  <div class="tarrow" v-click="1">OTLP →</div>
-  <div class="tnode" v-click="1">📡 <b>OTel Collector</b><span>high-density traces · metrics · events</span></div>
-  <div class="tarrow" v-click="4">↑ evaluate · no redeploy</div>
-  <div></div>
-  <div class="tarrow" v-click="2">↓ OTLP export</div>
-  <div class="tnode" v-click="4">🎚️ <b>OpenFeature</b><span>flagd · provider</span></div>
-  <div class="tarrow" v-click="3">← set flag</div>
-  <div class="tnode hot" v-click="2">🤖 <b>Agent</b><span>game master</span></div>
+<div class="pipe">
+  <div class="st"><b>📡 signals</b><span>OTLP metrics · 0.1–1 s</span></div>
+  <div class="st" v-click="1"><b>🚦 gates</b><span>may it ask?</span><code>enabled</code><code>interventions_allowed</code><code>llm.max_requests_per_minute</code></div>
+  <div class="st" v-click="2"><b>🔀 backend</b><span>who answers?</span><code>decision.backend</code></div>
+  <div class="st hot" v-click="3"><b>🤖 Jev · stage 1</b><span>"needs an intervention?" → p_yes</span><code>p_yes &lt; 0.5 → noop</code></div>
+  <div class="st hot" v-click="4"><b>🎯 stage 2</b><span>what · whom · how strong</span><code>decision.jev.act_confidence_threshold</code></div>
+  <div class="st" v-click="5"><b>✅ act · ⏸ held</b><span>game-scoped flag write</span><code>writer=agent</code></div>
 </div>
 
-<div v-click="5" class="mt-6">
+<div v-click="6" class="floor">
+  any timeout · error · invalid answer · empty budget → <b>rules, in the same cycle</b>
+  <span class="opacity-60">· <code>decide.fallback_reason</code> · the game never waits</span>
+</div>
+
+<div v-click="7" class="text-center mt-5 opacity-70">
+  Jev: noop ≈ 0.3 s · act ≈ 0.5 s &nbsp;·&nbsp; Claude: ≈ 3 s &nbsp;·&nbsp; rules: no network
+</div>
+
+<!--
+Let me zoom into one decision. Every box here has a flag on it.
+
+Signals come in.
+
+[click] Gates first. Is the agent enabled at all: that is the kill switch. Is there anything it may do: if interventions_allowed is none, it does not even ask the model. And is there budget left this minute.
+
+[click] Then: who answers. One flag picks the backend. Rules, Jev, Claude, or any OpenAI-compatible vendor.
+
+[click] Jev is a two-stage model. Stage one is a yes/no gate: does this game need an intervention right now? Its answer is a probability. Below one half: noop, one call, done.
+
+[click] Above it, stage two picks what, whom, how strong. And then the probability is compared with a threshold. A flag. 0.6 by default, 0.95 if I want it strict.
+
+[click] Above the bar: act, and the action is a flag write for this one game. Below the bar: held. The agent wanted to, and was not allowed.
+
+[click] And underneath everything: a floor. Any failure, the rules decide, in the same cycle. The game never waits for a model.
+
+[click] Numbers from rehearsal. Jev: a third of a second to say "nothing", half a second to act. Claude: around three seconds.
+
+[Calibrated gate values on jev-1.13.0: calm ≈ 0.16, dragging ≈ 0.35, collapsing ≈ 0.68, near the threshold ≈ 0.72. Do not promise exact numbers.]
+-->
+
+---
+layout: center
+---
+
+<div class="kicker">The control surface · who may write what</div>
+
+<div class="surface">
+
+| Flag | Writer | What it controls |
+|---|---|---|
+| `objectives` | 🧍 | the goal: `endurance` · `accelerate` · `chaos` |
+| `enabled` | 🧍 | kill switch · in-flight answers are discarded |
+| `decision.backend` | 🧍 | `rules` · `jev` · `claude` · `openai` |
+| `decision.jev.act_confidence_threshold` | 🧍 | how sure before acting · `gate` 0.6 · `strict` 0.95 |
+| `interventions_allowed` | 🧍 | `ambient` · `standard` · `full` · shrinks the question |
+| `llm.max_requests_per_minute` | 🧍 + env cap | budget · env can only lower it |
+| game-scoped interventions | 🤖 | shield · tempo · cue · die with the game |
+
+</div>
+
+<div v-click class="text-2xl text-center mt-6">The agent <span class="warn">never</span> writes its own limits.</div>
+
+<div v-click class="mt-4">
 
 ```python
 # in the game loop — the agent never touches this code
@@ -342,11 +532,13 @@ level = client.get_string_value("interventions_allowed", "")
 </div>
 
 <!--
-[Keep it quick — this is for the engineers in the room.]
+So this is the whole control surface. Six flags that I own, and one kind of flag the agent owns.
 
-[click] The game services emit telemetry over OTLP to a Collector. [click] The Collector exports it to the agent, which has its own OTLP receiver. [click] When it decides, it does not touch code. It sets a flag. [click] The game picks that flag up through OpenFeature within a second. No redeploy.
+The agent writes interventions, for one game. They die with that game. Everything that limits the agent, I write.
 
-[click] This line never changes. The behavior does.
+[click] The agent never writes its own limits. The OpenFeature stack enforces it: every write carries a writer label, every value is checked against declared bounds. An unknown variant is a 422, not a surprise.
+
+[click] And in the game, this line never changes. The behavior does.
 -->
 
 ---
@@ -436,6 +628,174 @@ Its judgment did not change.
 [click] Its authority did.
 
 [click] No code change. No review. No redeploy.
+-->
+
+---
+layout: center
+class: mid-code
+---
+
+<div class="kicker">What a decision leaves behind · one span</div>
+
+```yaml
+agent.decide                                   # service: agent
+  gen_ai.agent.name:           game-master
+  gen_ai.conversation.id:      <game id>
+  gen_ai.request.model:        jev-latest
+  decide.backend:              jev
+  decide.outcome:              act      # act·held·noop·fallback·discarded
+  decide.confidence:           0.72
+  decide.act_confidence_threshold: 0.60       # source: jev
+  decide.rationale:            "two players near the death line"
+  └─ event gen_ai.evaluation.result: "0.720 >= 0.600"
+  └─ chat jev-latest    jev.stage=intervention   jev.gate.p_yes=0.72
+  └─ chat jev-latest    jev.stage=details
+```
+
+<div class="footnote">
+Attribute values illustrative. OTel GenAI semantic conventions are still in Development status.
+</div>
+
+<!--
+And every decision is a span. Not a log line. A span, with the why.
+
+Which model, which backend. The outcome. The confidence, the threshold it was compared with, and where that threshold came from. The rationale, in words. And the model calls underneath as child spans, following the GenAI semantic conventions.
+
+So when someone asks "why did the agent shield that player": open the trace. That is the audit.
+
+[Do NOT call the OTel GenAI conventions stable — still Development status.]
+-->
+
+---
+layout: center
+class: text-center
+---
+
+<div class="kicker">Live · 192.168.8.2</div>
+
+<div class="statement">Let's play. 🎮</div>
+
+<div class="demo-beats mt-10">
+  <div>👀 observe a decision</div>
+  <div>🔀 rules → Jev</div>
+  <div>📏 threshold: act → held</div>
+  <div>🛟 Jev → Claude</div>
+  <div>🛑 kill switch</div>
+  <div>↩️ rollback</div>
+  <div>📉 degrade, never stall</div>
+  <div>📝 the summary</div>
+</div>
+
+<!--
+[LIVE DEMO, about 7 minutes. Operator script: JoustMania docs/talk/two-standards-runbook.md, beats 1–8.]
+
+[Before: talk-stage.sh reset, session baseline decision.backend=rules, a real game running.]
+
+[Tabs: dashboard http://192.168.8.2/ (Agent tab), Grafana http://192.168.8.2/grafana/d/talk?kiosk, Jaeger agent.decide search, Flagsmith, ssh terminal.]
+
+[After every flip: agent-backend.sh status, so the audience sees the flag move, not only its effect.]
+
+[If Bluetooth fails: fallback stack with shadow games / demo_driver.py. If the network fails: that IS beat 7. Backup screenshots are on the next slide.]
+-->
+
+---
+layout: default
+---
+
+<div class="kicker">If the demo gods say no · the same thing, captured</div>
+
+<div class="grid grid-cols-2 gap-4">
+  <Shot name="talk-board" caption="Grafana · Talk: Two Standards" />
+  <Shot name="jaeger-decide" caption="Jaeger · agent.decide" />
+  <Shot name="decide-outcome" caption="decide outcome split (span metrics)" />
+  <Shot name="decide-latency" caption="decide latency p95 by backend" />
+</div>
+
+<!--
+[Backup slide. Skip it if the live demo worked.]
+
+Same views as live: the stage dashboard, the decisions in Jaeger, the outcome split per backend, and the latency per backend.
+-->
+
+---
+layout: two-cols
+class: px-8
+---
+
+<div class="kicker">After the game</div>
+
+# Fast decides. <span class="accent">Slow reflects.</span>
+
+<div class="text-xl mt-6 space-y-3 opacity-90">
+  <div>🤖 <b>Jev</b> · in the game · 0.3 s</div>
+  <div>🧠 <b>Claude</b> · after the game · <code>agent.llm.retro</code></div>
+</div>
+
+<div v-click class="text-lg mt-6 space-y-1 opacity-75">
+  <div><code>session_assessment</code> · how did it go?</div>
+  <div><code>session_focus</code> · what to watch next time</div>
+  <div><code>retro.suggestion</code> · type · emphasis · reason</div>
+</div>
+
+<div v-click class="text-lg mt-6 accent">Same telemetry. Same flags. Advice, not action.</div>
+
+::right::
+
+<div class="mt-20">
+<Shot name="retro" caption="Jaeger · agent.llm.retro · the post-game summary" />
+</div>
+
+<!--
+When the game ends, a different model takes over. Jev made the decisions in the game, a third of a second each. Claude reads the whole game afterwards and writes a summary.
+
+[click] How did it go. What to focus on next time. And concrete suggestions: which intervention, how much, and why.
+
+[click] Same telemetry in, same flag system around it. But this one only advises. It does not act. A human reads it.
+
+[This is reflex and cortex in miniature, set it up for §4.]
+-->
+
+---
+layout: two-cols
+class: px-8
+---
+
+<div class="kicker">Humans see every write</div>
+
+# One place to see every change
+
+<div class="text-lg mt-6 space-y-3 opacity-90">
+  <div><b>every write</b> · agent, operator, scripts · with who and when</div>
+  <div><b>human edits</b> · change a flag in the UI → an ordinary, validated write</div>
+  <div v-click><b>conflict</b> · the human wins · <span class="warn">kill switch included</span></div>
+  <div v-click><b>offline</b> · never on the game path · the Pi plays without it</div>
+</div>
+
+<div v-click class="text-lg mt-6 opacity-70">Evaluation stays local and boring. The management UI is a writer and a window.</div>
+
+::right::
+
+<div class="mt-16">
+<Shot name="flag-audit" caption="the agent's writes next to mine · Flagsmith here" />
+</div>
+<div class="mt-4">
+<Shot name="flag-writes" caption="Grafana · flag writes / min, by writer and result" />
+</div>
+
+<!--
+One more piece. Where do I, the human, look?
+
+Every accepted write is mirrored to a flag management UI. The agent's interventions, my threshold flips, the scripts. So there is one place that shows what changed, who changed it, when. I use Flagsmith for that.
+
+And it works the other way. I change a flag there, and it comes back as an ordinary, validated write.
+
+[click] On a conflict, the human side wins. Also for the kill switch. If I hit it there, it holds.
+
+[click] And it is never on the path of a game. It is SaaS; a booth has bad WiFi. The game plays without it.
+
+[click] Evaluation stays local and boring. The UI is a writer, and a window.
+
+[Show it live if time allows: the agent's game-scoped writes appearing as identity overrides in Flagsmith.]
 -->
 
 ---
@@ -627,6 +987,82 @@ That boundary has to live somewhere. The wires are getting standardized. MCP, A2
 [click] We have been here before. OpenTelemetry and OpenFeature happened because people from many companies sat at the same table. This one can too.
 
 [Do NOT call the OTel GenAI conventions stable — still Development status.]
+-->
+
+---
+layout: center
+---
+
+<div class="kicker">Where this goes · the loop, turned inward</div>
+
+<div class="statement">Today, flags steer <span class="accent">the agent</span>.</div>
+
+<div v-click class="statement mt-8">Next, flags steer <span class="accent">the senses</span>.</div>
+
+<!--
+One last idea, and it is where I want to take this.
+
+Today the loop goes out. Telemetry in, flags out, the game changes.
+
+[click] But the senses themselves can be a flag. Most telemetry config is static. We decide up front which spans, which attributes, how much. And then we live with it.
+-->
+
+---
+layout: two-cols
+class: px-8
+---
+
+<div class="kicker">Telemetry that adapts</div>
+
+# Healthy
+
+<div class="text-2xl mt-6 space-y-2 opacity-80">
+  <div>Lean traces</div>
+  <div>Few attributes</div>
+  <div class="accent">Low cost, low noise</div>
+</div>
+
+::right::
+
+<div v-click>
+
+<div class="kicker">&nbsp;</div>
+
+# Unsure
+
+<div class="text-2xl mt-6 space-y-2 opacity-80">
+  <div><code>held</code> · low confidence · incident</div>
+  <div>Deep spans, extra attributes</div>
+  <div class="warn">Exactly when you need them</div>
+</div>
+
+</div>
+
+<div v-click class="footnote">
+Already a runtime flag in this game: <code>log_level</code>. Next: span detail, attributes, sampling.
+</div>
+
+<!--
+When everything is healthy, detailed telemetry is cost and noise.
+
+[click] When the agent is unsure, when it holds a decision, when there is an incident, it is exactly the telemetry we did not collect. So let the same loop raise the detail, and lower it again.
+
+[click] In this game, log_level already is a runtime flag. Span detail and sampling are next.
+-->
+
+---
+layout: center
+class: text-center
+---
+
+<div class="statement">Semantic conventions as the <span class="accent">control surface</span>.</div>
+
+<div v-click class="text-xl mt-10 opacity-60">OpenFeature as a control plane for OpenTelemetry</div>
+
+<!--
+And if the knobs are named after semantic conventions, that control surface is vendor-neutral too. Same as the boundary. Same table.
+
+[click] That was my KubeCon talk: OpenFeature as a control plane for OpenTelemetry. Same two standards, pointed the other way.
 -->
 
 ---

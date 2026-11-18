@@ -5,8 +5,9 @@
   "scripts": {
     "dev": "slidev --open",
     "build": "slidev build",
-    "export": "slidev export",
-    "export:pptx": "slidev export --format pptx --with-clicks --output stop-mutating.pptx"
+    "export": "slidev export --with-clicks --output two-standards-walk-into-an-agent.pdf",
+    "export:pptx": "slidev export --format pptx --with-clicks --output two-standards-walk-into-an-agent.pptx",
+    "shots": "node scripts/capture-screenshots.mjs"
   },
   "dependencies": {
     "@slidev/cli": "latest",

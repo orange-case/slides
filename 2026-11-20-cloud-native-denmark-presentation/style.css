@@ -85,40 +85,76 @@ html.dark {
   padding: 1.5rem 2rem !important;
 }
 
-/* Technical loop: App → Collector → Agent → OpenFeature → App */
-.tloop {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  grid-template-rows: auto auto auto;
-  gap: 0.75rem 1.5rem;
-  align-items: center;
-}
-.tnode {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0.9rem 1.25rem;
-  border: 2px solid var(--line);
-  border-radius: 14px;
-  font-size: 1.3rem;
-}
-.tnode span {
-  font-size: 0.85rem;
-  opacity: 0.6;
-}
-.tnode.hot {
-  border-color: var(--accent);
-  box-shadow: 0 0 28px -8px var(--accent);
-}
-.tarrow {
-  text-align: center;
-  font-size: 0.95rem;
-  opacity: 0.7;
-  font-family: var(--slidev-code-font-family, monospace);
-}
-
 table.wires td,
 table.wires th {
   padding: 0.5rem 1rem;
   border-bottom: 1px solid var(--line);
+}
+
+/* One decision: a left-to-right pipeline, each step with the flag that governs it */
+.pipe {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.6rem;
+  align-items: stretch;
+}
+.pipe .st {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 0.75rem 0.7rem;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  font-size: 0.95rem;
+}
+.pipe .st span {
+  font-size: 0.78rem;
+  opacity: 0.65;
+}
+.pipe .st code {
+  font-size: 0.62rem;
+  overflow-wrap: anywhere;
+  color: #8b5cf6;
+}
+.pipe .st.hot {
+  border-color: var(--accent);
+  box-shadow: 0 0 24px -10px var(--accent);
+}
+.floor {
+  margin-top: 1rem;
+  padding: 0.7rem 1rem;
+  border: 2px dashed var(--warn);
+  border-radius: 12px;
+  text-align: center;
+  font-size: 1rem;
+}
+
+.surface table {
+  font-size: 0.9rem;
+}
+.surface td,
+.surface th {
+  padding: 0.35rem 0.8rem;
+}
+
+.demo-beats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  font-size: 1.1rem;
+}
+.demo-beats > div {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+.small-code .slidev-code {
+  font-size: 0.72rem !important;
+  line-height: 1.5 !important;
+}
+
+.mid-code .slidev-code {
+  font-size: 1rem !important;
+  line-height: 1.55 !important;
 }
