@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Crossfading photos of the original J.S. Joust (from kubecon-material's KubeCon EU deck).
+// Crossfading photos of the original J.S. Joust (from the KubeCon EU 2026 deck in this repo).
 // Photos by Brent Knepper, Sara Bobo and Die Gute Fabrik.
 import { ref, onMounted, onUnmounted } from 'vue'
 
