@@ -38,6 +38,8 @@ jobs:
       - name: Build every deck
         env:
           REPO: ${{ github.event.repository.name }}
+          # Building needs no browser; playwright-chromium (PDF export, screenshots) would try to download one.
+          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
         run: |
           set -euo pipefail
           mkdir -p gh-pages
