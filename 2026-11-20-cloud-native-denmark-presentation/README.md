@@ -18,19 +18,24 @@ npm run dev
 
 `npm run build` writes the static site to `dist/`. Press `p` for presenter mode (speaker notes and timing cues).
 
-## Structure (30 min)
+## Structure (30 min, show first, name it after)
 
 | Time | Section | Slides |
 |---|---|---|
 | 0:00 | §1 The reframe | mutation and selection, slow gods |
-| 3:00 | About me | |
-| 4:00 | §2 Living systems | mutation vs adaptation, OTel = senses, OpenFeature = muscles |
-| 7:00 | §3 The experiment | the game, the acceleration curve, tempo as a lever |
-| 8:30 | §3 Under the hood | architecture before / after, one decision, the control surface, the span |
-| 13:30 | §3 Live demo | `192.168.8.2`, beats 1–8 of the runbook, then the post-game summary and the audit view |
-| 21:00 | §4 Reflex and cortex | |
-| 25:00 | §5 The boundary must be portable | and where this goes: flags steering the telemetry itself |
-| 27:30 | Close, Q&A | |
+| 2:30 | About me | |
+| 3:15 | §2 Living systems | mutation vs adaptation, OTel = senses, OpenFeature = muscles |
+| 6:00 | §3 The game | the acceleration curve, tempo as a lever |
+| 8:00 | §3 Architecture | before / after, Jev in one sentence, the goal flag |
+| 10:00 | §3 Live demo | 5 beats: observe (span in Jaeger), ambient → standard, threshold, kill switch, degrade |
+| 16:00 | §3 Naming it | "its authority did", one decision, the control surface |
+| 18:30 | §3 After the game | the post-game summary, the pattern |
+| 19:45 | §4 Reflex and cortex | |
+| 23:30 | §5 The boundary must be portable | callback to the control surface vocabulary |
+| 25:30 | Close | Q&A from about 27:00 |
+
+After "Thank you" come backup slides for questions: the permission flip as a magic move (fallback for demo
+beat 2), the decide span, the live views, the audit view, and where this goes next (flags steering the telemetry).
 
 ## Live panels and screenshots
 
