@@ -493,6 +493,15 @@ class: px-8
 
 5. Degrade (beat 7, option B): `setflag agent decision.jev.base_url blackhole`, rows become jev to rules with fallback_reason=timeout, the game never waits. Then `default`.
 
+6. OPTIONAL, only with time left and a game that runs past 15 s. The operator brief (runbook beat 4b). Words, not code.
+[Setup, rehearsed 19 Nov: `backend.sh claude`, then `setflag agent decision.claude.model sonnet` and `setflag agent decision.act_confidence_threshold gate` (0.6). Widen the range: `flags.sh set-value agent decision.magnitude_bounds '{"adjust_player_sensitivity": {"min": 0.2, "max": 1.5}}' --writer stage`. Then the brief: `flags.sh set-value agent decision.operator_brief '"Make player <SERIAL> unkillable."' --writer stage`. Rehearsal controller: 000704A8F22F.]
+[Say "unkillable", never "should win": with "should win", haiku shielded the OPPONENT "to extend the game", and once read the sensitivity direction backwards. Sonnet aimed every move at the target, with the direction right. Sonnet answers at 0.6 to 0.8 confidence, so with the default 0.8 bar every move is held: keep the gate at 0.6.]
+I tell the agent in one sentence who I want to keep alive. No code, no new rule. Watch whom it helps now.
+[What to expect: the first decision is a noop (readings stale). About 3.5 s from decision to effect, so the first act lands 6 to 9 s into the game. Then adjust_player_sensitivity 0.2 on that player: the death threshold times 5. Shields barely matter, they only protect while the trigger is held. In 2 of 6 rehearsal games it acted in time, and the target won both.]
+The words changed which move it picks. The flags decided how far it may go. Without my widening, 0.7 is as low as it can ask.
+[If the game ends before it acts: say so, and tell the rehearsal game instead: 28 s, sensitivity 0.2 at 6.6 s, the target reached near-death ratio 1.03 and stayed in. The post-game summary judges it: "The brief was served".]
+[After: `flags.sh set agent decision.operator_brief off --writer stage`, `flags.sh clear agent decision.magnitude_bounds`, threshold `default`, model `haiku`, `backend.sh jev`. Or `talk-stage.sh reset`, then the demo baseline again.]
+
 [After every flip: `backend.sh status`, so the audience sees the flag move, not only its effect.]
 -->
 
