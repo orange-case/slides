@@ -29,7 +29,7 @@ class: text-center
 <!--
 [Walk on. Let the title sit.]
 
-[Timing, about 27 min + Q&A: §1 reframe 0:00 · about me 2:30 · §2 living systems 3:15 · §3 the game and the curve 6:00 · architecture 8:00 · LIVE DEMO 10:00 (3 games, about 7 min) · punchline, pipeline, control surface 17:00 · summary, pattern 19:30 · §4 reflex and cortex 20:45 · §5 portable boundary 24:30 · close 26:30 · Q&A from about 28:00. Slot 10:25–11:00.]
+[Timing, about 27 min + Q&A: §1 reframe 0:00 · about me 2:30 · §2 living systems 3:15 · §3 the game and the curve 6:00 · architecture 8:00 · LIVE DEMO 10:00 (3 games, about 7 min; hard stop 22:00 = 10:47, time check in its notes) · punchline, pipeline, control surface 17:00 · summary, pattern 19:30 · §4 reflex and cortex 20:45 · §5 portable boundary 24:30 · close 26:30 · Q&A from about 28:00. Slot 10:25–11:00.]
 -->
 
 ---
@@ -482,6 +482,17 @@ class: px-8
 </div>
 
 <!--
+[TIME CHECK, first thing on this slide. Plan: the demo starts at 10:00 on the timer (10:35 on the clock) and takes about 7 minutes. HARD STOP: leave the demo by 22:00 (10:47), whatever is still running: the rest of the talk needs about 11 minutes.]
+
+**Timer now → what you play:**
+
+- **up to 13:00** (10:38): all three games. Game 1 two minutes, game 2 three, game 3 two.
+- **13:00 to 15:00** (10:38 to 10:40): games 1 and 2, then the kill switch at the end of game 2. Skip the new goal. About 5 minutes.
+- **15:00 to 18:30** (10:40 to 10:43): game 2 only, the kill switch at its end. Its Jaeger trace replaces game 1's. About 3.5 minutes.
+- **after 18:30** (10:43): no live game. Point at the board, tell the rehearsal game (0.2 at 6.6 s, "The brief was served"), move on.
+
+[Every minute over 7 comes out of Q&A, which starts at about 28:00 with the full demo.]
+
 [LIVE DEMO, about 7 minutes, three games, 3 to 4 players each (with two players games end in 7 to 14 s, before Claude acts). Operator: JoustMania docs/talk/flagsmith-stage-sheet.md (Flagsmith) and docs/talk/two-standards-runbook.md (scripts).]
 
 [Before the talk (T-1 h): `talk-stage.sh reset`, then `decision.backend` = `jev`, `interventions_allowed` = `standard`, `decision.claude.model` = `sonnet`, `decision.act_confidence_threshold` = `gate`. The last two do nothing while Jev decides; they get game 2 ready. Note the serial of the controller you will protect. Tabs open: dashboard Agent tab (Decisions), Grafana talk board (kiosk), Jaeger, Flagsmith (stage environment). Then `talk-preflight.sh`.]
