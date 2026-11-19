@@ -931,7 +931,16 @@ class: text-center
 
 <div class="mt-8 text-lg opacity-60">Next: OpenFeature as a control plane for OpenTelemetry. Flags steering the senses.</div>
 
-<div class="mt-2 text-sm opacity-50">orange-case.github.io/slides</div>
+<div class="flex justify-center gap-14 mt-6">
+  <div class="flex flex-col items-center gap-2">
+    <img src="/img/slides-qr.svg" class="contact-qr" alt="QR code for these slides" />
+    <div class="text-sm opacity-70">these slides</div>
+  </div>
+  <div class="flex flex-col items-center gap-2">
+    <img src="/img/contact-qr.svg" class="contact-qr" alt="QR code to get in touch with Simon" />
+    <div class="text-sm opacity-70">get in touch</div>
+  </div>
+</div>
 
 <div class="mt-8 opacity-50">Simon Schrottner · OpenFeature · CNCF · AAIF</div>
 
