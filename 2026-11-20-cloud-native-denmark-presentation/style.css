@@ -1,13 +1,48 @@
+/* Orange Case brand (orange-case.github.io/assets/style.css): orange on warm paper,
+   a warm near-black in dark mode, stencil headings. Fonts are self-hosted
+   (SIL OFL, assets/brand/OFL-*.txt). */
+@font-face {
+  font-family: "Big Shoulders Stencil Display";
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url("./assets/brand/big-shoulders-stencil-display-800-latin.woff2") format("woff2");
+}
+
 :root {
-  --accent: #0d9488;
-  --warn: #ea580c;
-  --line: rgba(0, 0, 0, 0.2);
+  --orange: #e8701a;
+  /* text in orange: WCAG AA on the light paper */
+  --accent: #a34505;
+  --warn: #b91c1c;
+  --line: rgba(47, 47, 47, 0.22);
+  --ink: #2f2f2f;
+  --paper: #fbf7f2;
+  --slidev-theme-primary: #c85a10;
 }
 
 html.dark {
-  --accent: #5eead4;
-  --warn: #fb923c;
-  --line: rgba(255, 255, 255, 0.25);
+  --accent: #ff8a3a;
+  --warn: #f87171;
+  --line: rgba(243, 236, 228, 0.22);
+  --ink: #f3ece4;
+  --paper: #171412;
+  --slidev-theme-primary: #ff8a3a;
+}
+
+.slidev-layout {
+  color: var(--ink);
+  background:
+    radial-gradient(70% 55% at 50% 0%, color-mix(in srgb, var(--orange) 10%, transparent), transparent 70%),
+    var(--paper);
+}
+
+/* Stencil headings, as on the website */
+.slidev-layout h1,
+.stencil {
+  font-family: "Big Shoulders Stencil Display", "Inter", sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .slidev-layout {
@@ -36,7 +71,8 @@ html.dark {
   text-transform: uppercase;
   letter-spacing: 0.15em;
   font-size: 0.8rem;
-  opacity: 0.55;
+  font-weight: 700;
+  color: var(--accent);
   margin-bottom: 1rem;
 }
 
@@ -127,7 +163,7 @@ table.wires th {
 .pipe .st code {
   font-size: 0.62rem;
   overflow-wrap: anywhere;
-  color: #8b5cf6;
+  color: var(--accent);
 }
 .pipe .st.hot {
   border-color: var(--accent);
@@ -193,3 +229,26 @@ table.wires th {
 .retro-card .assess { font-style: italic; }
 .retro-card .focus { opacity: 0.7; }
 .retro-card .sugg span { display: block; opacity: 0.7; font-size: 0.85rem; }
+
+/* The case on the cover, and small in the corner of every other slide */
+.cover-case {
+  width: 9rem;
+  height: auto;
+  margin: 0 auto 1.5rem;
+  filter: drop-shadow(0 14px 26px rgba(232, 112, 26, 0.45));
+}
+
+/* The talk title on the cover, in the stencil face */
+.statement.cover-title {
+  font-size: 4.2rem;
+  line-height: 1;
+  letter-spacing: 0.02em;
+}
+
+/* Contact QR on the bio slide: always dark on white, so it scans in dark mode too */
+.contact-qr {
+  width: 7.5rem;
+  height: 7.5rem;
+  border-radius: 8px;
+  background: #fff;
+}

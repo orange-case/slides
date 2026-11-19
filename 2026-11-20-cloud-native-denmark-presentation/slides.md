@@ -14,9 +14,11 @@ fonts:
 layout: center
 class: text-center
 ---
+<CaseLogo class="cover-case" />
+
 <div class="kicker">Stop mutating · start adapting</div>
 
-<div class="statement">Two Standards Walk Into <span class="accent">an Agent</span></div>
+<div class="statement stencil cover-title">Two Standards Walk<br>Into <span class="accent">an Agent</span></div>
 
 <div class="text-2xl mt-4 opacity-80">
   Runtime Agent Control with OpenTelemetry and OpenFeature
@@ -144,9 +146,12 @@ class: flex flex-col justify-center
   </div>
 </div>
 
-<div class="text-xs opacity-60 mt-8 space-y-1">
-  <div>simon@schrottner.at · schrottner.at</div>
-  <div>github.com/aepfli · in/aepfli · @aepfli.bsky.social</div>
+<div class="flex items-center gap-5 mt-6">
+  <img src="/img/contact-qr.svg" class="contact-qr" alt="QR code to get in touch with Simon" />
+  <div class="text-left">
+    <div class="text-lg font-semibold">Get in touch</div>
+    <div class="text-sm opacity-60">scan me</div>
+  </div>
 </div>
 
 <!--
@@ -467,7 +472,7 @@ class: px-8
 <div class="demo-beats demo-3 mt-6">
   <div>🎮 <b>1 · Jev decides</b> · we watch<br><span class="opacity-60">decisions · the board · one trace per game</span></div>
   <div>🎮 <b>2 · Claude</b> · "make player X unkillable"<br><span class="opacity-60">three flags · a sentence and a wider limit</span></div>
-  <div>🎮 <b>3 · Jev, goal: chaos</b> · then off<br><span class="opacity-60">one goal flag · then the kill switch</span></div>
+  <div>🎮 <b>3 · Jev, new goal</b> · then off<br><span class="opacity-60">one goal flag · then the kill switch</span></div>
 </div>
 
 ::right::
