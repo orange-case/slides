@@ -27,7 +27,7 @@ class: text-center
 <!--
 [Walk on. Let the title sit.]
 
-[Timing, about 27 min + Q&A: §1 reframe 0:00 · about me 2:30 · §2 living systems 3:15 · §3 the game and the curve 6:00 · architecture 8:00 · LIVE DEMO 10:00 (5 beats, 6 min) · punchline, pipeline, control surface 16:00 · summary, pattern 18:30 · §4 reflex and cortex 19:45 · §5 portable boundary 23:30 · close 25:30 · Q&A from about 27:00. Slot 10:25–11:00.]
+[Timing, about 27 min + Q&A: §1 reframe 0:00 · about me 2:30 · §2 living systems 3:15 · §3 the game and the curve 6:00 · architecture 8:00 · LIVE DEMO 10:00 (3 games, about 7 min) · punchline, pipeline, control surface 17:00 · summary, pattern 19:30 · §4 reflex and cortex 20:45 · §5 portable boundary 24:30 · close 26:30 · Q&A from about 28:00. Slot 10:25–11:00.]
 -->
 
 ---
@@ -464,12 +464,10 @@ class: px-8
 
 # Let's play. 🎮
 
-<div class="demo-beats demo-5 mt-6">
-  <div>👀 <b>observe</b> a decision · open its span</div>
-  <div>🎚️ <b>ambient → standard</b> · it may shield</div>
-  <div>📏 <b>threshold</b> · act → held</div>
-  <div>🛑 <b>kill switch</b></div>
-  <div>📉 <b>degrade</b>, never stall</div>
+<div class="demo-beats demo-3 mt-6">
+  <div>🎮 <b>1 · Jev decides</b> · we watch<br><span class="opacity-60">decisions · the board · one trace per game</span></div>
+  <div>🎮 <b>2 · Claude</b> · "make player X unkillable"<br><span class="opacity-60">three flags · a sentence and a wider limit</span></div>
+  <div>🎮 <b>3 · back to Jev</b> · then the kill switch<br><span class="opacity-60">one flip back · one flip off</span></div>
 </div>
 
 ::right::
@@ -479,30 +477,37 @@ class: px-8
 </div>
 
 <!--
-[LIVE DEMO, about 6 minutes, five beats. Operator script: JoustMania docs/talk/two-standards-runbook.md.]
+[LIVE DEMO, about 7 minutes, three games, 3 to 4 players each (with two players games end in 7 to 14 s, before Claude acts). Operator: JoustMania docs/talk/flagsmith-stage-sheet.md (Flagsmith) and docs/talk/two-standards-runbook.md (scripts).]
 
-[Before: talk-stage.sh reset, then `backend.sh jev` and `setflag agent interventions_allowed ambient`, a real game running. The board on the right is live while the Pi answers; press v for the screenshot.]
+[Before the talk (T-1 h): `talk-stage.sh reset`, then `decision.backend` = `jev`, `interventions_allowed` = `standard`, `decision.claude.model` = `sonnet`, `decision.act_confidence_threshold` = `gate`. The last two do nothing while Jev decides; they get game 2 ready. Note the serial of the controller you will protect. Tabs open: dashboard Agent tab (Decisions), Grafana talk board (kiosk), Jaeger, Flagsmith (stage environment). Then `talk-preflight.sh`.]
 
-1. Observe (runbook beat 2): a green act or grey noop row on the dashboard. Click its trace link, open agent.decide in Jaeger: rationale, confidence, threshold, the two chat jev-latest children. This replaces the span slide.
+GAME 1 · Jev decides, we watch.
+I change nothing. The agent plays along: Jev, a third of a second per decision.
+[During the game: the Agent tab, Decisions panel. A row every few seconds: green act or grey noop, the backend, the target, the rationale, the confidence. Then the Grafana board: decisions per minute by backend and outcome, interventions per minute by type, and the OpenFeature flag evaluations the game makes.]
+Every decision is a row. Every row has a reason.
+[After the game: open the game's trace in Jaeger. One trace is the whole game: every agent.decide span, every action, and at the end the summary span. Click one decision: rationale, confidence, threshold, the chat jev-latest children. This replaces the span slide.]
+[Optional: in Flagsmith, open the shielded controller's identity (controller:<serial>): the agent's shield is an override there while the game runs. Only if rehearsed: it is gone when the game ends.]
 
-2. Ambient to standard: on ambient the agent may only use sound and LEDs. When it wants to protect the weakest player, `setflag agent interventions_allowed standard`. It shields (white LED, Shield badge). A few seconds later back to `ambient`. If it does not show: the backup magic-move slide.
+GAME 2 · Claude, and one sentence.
+Now I change who decides, and I tell it what I want. In Flagsmith, three changes. You watch me make them.
+[1. `decision.backend` = `claude`.]
+[2. `decision.magnitude_bounds` = `{"adjust_player_sensitivity":{"min":0.2,"max":1.5}}`.] I widen the limit. Only I can. The agent never writes its own limits.
+[3. `decision.operator_brief` = `Make player <SERIAL> unkillable.` (no quotes).] One sentence. No code, no new rule.
+[Say "unkillable", never "should win": with "should win" the model shielded the opponent "to extend the game". Sonnet answers at 0.6 to 0.8 confidence, which is why the bar is at gate (0.6): at 0.8 every move is held. If you see amber held rows, that is the threshold at work: say so.]
+[What to expect: the first row is a noop (readings still stale). Claude takes about 3 s, so the first act lands 6 to 9 s into the game. Rows switch to claude, rationales quote the brief, a shield for the protected player, then adjust_player_sensitivity 0.2 on them: the death threshold times 5. Shields barely matter: they protect only while the trigger is held.]
+Watch whom it helps now.
+[After the game: the same trace view, the summary span at the end. Read the first line: "The brief was served", or "served only by luck", or "not served". The summary is Claude reading the whole game afterwards.]
+The words changed which move it picks. The flags decided how far it may go.
+[If the game ends before it acts: say so, and tell the rehearsal game: 28 s, sensitivity 0.2 at 6.6 s, near-death ratio 1.03, stayed in, "The brief was served".]
+[If a Flagsmith change takes more than a few seconds to show: make that change with the script (runbook beat 4b), and show the value in Flagsmith afterwards.]
 
-3. Threshold (beat 3a): `backend.sh jev-threshold strict`, the near-threshold rows turn amber held. Back with `backend.sh jev-threshold gate`.
+GAME 3 · Back to normal, then off.
+[In Flagsmith: `decision.operator_brief` = `off`, `decision.magnitude_bounds` = `default`, `decision.backend` = `jev`.] One change back, and Jev decides again. No redeploy.
+[During the game: `enabled` = `off`. The Decisions panel goes silent, the game keeps playing. An answer in flight lands as discarded. Then `enabled` = `on`. If Flagsmith is slow for this one: `agent-killswitch.sh off` / `on`.]
+The kill switch. The game does not care. It never waited for the agent.
 
-4. Kill switch (beat 5): `agent-killswitch.sh off`, the feed goes silent, the game keeps playing. `on` again.
-
-5. Degrade (beat 7, option B): `setflag agent decision.jev.base_url blackhole`, rows become jev to rules with fallback_reason=timeout, the game never waits. Then `default`.
-
-6. OPTIONAL, only with time left and a game that runs past 15 s. The operator brief (runbook beat 4b). Words, not code.
-[Setup, rehearsed 19 Nov: `backend.sh claude`, then `setflag agent decision.claude.model sonnet` and `setflag agent decision.act_confidence_threshold gate` (0.6). Widen the range: `flags.sh set-value agent decision.magnitude_bounds '{"adjust_player_sensitivity": {"min": 0.2, "max": 1.5}}' --writer stage`. Then the brief: `flags.sh set-value agent decision.operator_brief '"Make player <SERIAL> unkillable."' --writer stage`. Rehearsal controller: 000704A8F22F.]
-[Say "unkillable", never "should win": with "should win", haiku shielded the OPPONENT "to extend the game", and once read the sensitivity direction backwards. Sonnet aimed every move at the target, with the direction right. Sonnet answers at 0.6 to 0.8 confidence, so with the default 0.8 bar every move is held: keep the gate at 0.6.]
-I tell the agent in one sentence who I want to keep alive. No code, no new rule. Watch whom it helps now.
-[What to expect: the first decision is a noop (readings stale). About 3.5 s from decision to effect, so the first act lands 6 to 9 s into the game. Then adjust_player_sensitivity 0.2 on that player: the death threshold times 5. Shields barely matter, they only protect while the trigger is held. In 2 of 6 rehearsal games it acted in time, and the target won both.]
-The words changed which move it picks. The flags decided how far it may go. Without my widening, 0.7 is as low as it can ask.
-[If the game ends before it acts: say so, and tell the rehearsal game instead: 28 s, sensitivity 0.2 at 6.6 s, the target reached near-death ratio 1.03 and stayed in. The post-game summary judges it: "The brief was served".]
-[After: `flags.sh set agent decision.operator_brief off --writer stage`, `flags.sh clear agent decision.magnitude_bounds`, threshold `default`, model `haiku`, `backend.sh jev`. Or `talk-stage.sh reset`, then the demo baseline again.]
-
-[After every flip: `backend.sh status`, so the audience sees the flag move, not only its effect.]
+[Cut order if time is short: game 3's kill switch moves to Q&A, then the Jaeger click in game 1. The degrade beat (Jev unreachable, rules take over) is not in this demo: keep it for Q&A.]
+[After the talk: `talk-stage.sh reset` with the Flagsmith link online.]
 -->
 
 ---
@@ -522,9 +527,9 @@ No code change. No review. No redeploy.
 </div>
 
 <!--
-[Right after the demo. Point back at beat 2.]
+[Right after the demo. Point back at games 2 and 3.]
 
-You saw it. When I raised the permission, the agent shielded. When I lowered it, it stopped.
+You saw it. I gave it one sentence and a wider limit, and it went as far as I allowed for one player. I flipped one flag, and it stopped. I never touched its code.
 
 Its judgment did not change.
 
@@ -659,7 +664,9 @@ class: px-8
 </div>
 
 <!--
-When the game ends, a different model takes over. Jev made the decisions in the game, a third of a second each. Claude reads the whole game afterwards and writes a summary.
+[You showed a live summary after game 2. This card is a rehearsal game, so the audience gets a second example.]
+
+When a game ends, a different model takes over. In game one Jev made the decisions, a third of a second each. Claude reads the whole game afterwards and writes a summary.
 
 [click] How did it go. What to focus on next time. And concrete suggestions: which intervention, how much, and why.
 
@@ -667,7 +674,7 @@ When the game ends, a different model takes over. Jev made the decisions in the 
 
 [click] And my favourite line from a real game this week. The agent did act: it gave a player a shield. The summary noticed the shield was never used, and suggested a sound cue telling the player to hold it. The slow model holding the fast one to account.
 
-[The card quotes the real agent.llm.retro span of an 18 Nov game, 80 s, two players (game_3ee47288861b, trace 5b66f569…). Live: needs inference.backend=claude (flag service, persisted; re-set after talk-stage.sh reset, the baseline is stub) and a working ANTHROPIC_API_KEY. If the live summary is empty (inference.used=none) or 401, stay on this card.]
+[The card quotes the real agent.llm.retro span of an 18 Nov game, 80 s, two players (game_3ee47288861b, trace 5b66f569…). Live: needs inference.backend=claude (the stage reset sets it; the file baseline is stub) and a working ANTHROPIC_API_KEY. If the live summary is empty (inference.used=none) or 401, stay on this card.]
 
 [This is reflex and cortex in miniature, set it up for §4.]
 -->
@@ -924,7 +931,7 @@ class: text-center
 <div class="statement opacity-60">For questions</div>
 
 <!--
-[Backup slides: the permission flip as a magic move (fallback for demo beat 2), the decide span, the live views, the audit view, the experiment loop, and where this goes next.]
+[Backup slides: the permission flip as a magic move (fallback if the agent never shields in game 1 or 2), the decide span, the live views, the audit view, the experiment loop, and where this goes next.]
 -->
 
 ---
@@ -983,7 +990,7 @@ class: big-code
 </div>
 
 <!--
-[BACKUP: fallback for demo beat 2 if the shield does not show live.]
+[BACKUP: fallback if no shield shows live in game 1 or 2.]
 
 My agent saw the weakest player. The field was shrinking. It wanted to shield that player.
 

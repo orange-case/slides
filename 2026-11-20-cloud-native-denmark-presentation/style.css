@@ -172,7 +172,8 @@ table.wires th {
   line-height: 1.55 !important;
 }
 
-.demo-beats.demo-5 {
+.demo-beats.demo-5,
+.demo-beats.demo-3 {
   grid-template-columns: 1fr;
   gap: 0.5rem;
   font-size: 1.05rem;
