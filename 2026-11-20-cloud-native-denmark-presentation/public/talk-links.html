@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Talk tabs</title>
+<style>
+  :root {
+    --orange: #e8701a; --accent: #a34505; --ink: #2f2f2f; --muted: #6b625a;
+    --paper: #fbf7f2; --line: #e7ddd2; --done: #6b8f5e;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --accent: #ff8a3a; --ink: #f3ece4; --muted: #b3a79b; --paper: #171412; --line: #3a332d; --done: #9cc28c; color-scheme: dark; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.5 Inter, system-ui, sans-serif; }
+  main { max-width: 760px; margin: 0 auto; padding: 32px 16px 48px; }
+  .kicker { color: var(--accent); font-weight: 700; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; margin: 0; }
+  h1 { margin: 4px 0 8px; font-size: 32px; }
+  p.lede { color: var(--muted); margin: 0 0 20px; }
+  .bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; align-items: center; }
+  button { font: inherit; font-weight: 600; padding: 10px 16px; border-radius: 10px; border: 2px solid var(--orange); background: transparent; color: var(--accent); cursor: pointer; }
+  button.primary { background: #b04a08; border-color: #b04a08; color: #fff; }
+  label { color: var(--muted); display: flex; gap: 6px; align-items: center; }
+  ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; counter-reset: n; }
+  li { counter-increment: n; display: grid; grid-template-columns: 40px 1fr; gap: 12px; align-items: start; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; }
+  li::before { content: counter(n); font-weight: 800; font-size: 22px; color: var(--accent); text-align: center; }
+  li.done { opacity: .5; }
+  li.done::before { content: "✓"; color: var(--done); }
+  li.next { border-color: var(--orange); box-shadow: 0 0 0 1px var(--orange); }
+  .when { font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+  a { color: var(--ink); font-weight: 600; text-decoration: none; }
+  a:hover, a:focus-visible { color: var(--accent); text-decoration: underline; }
+  .url { display: block; font: 13px/1.4 ui-monospace, monospace; color: var(--muted); overflow-wrap: anywhere; }
+  .hint { font-size: 14px; color: var(--muted); margin-top: 2px; }
+  footer { margin-top: 24px; font-size: 14px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main>
+  <p class="kicker">Cloud Native Denmark · 20 Nov 2026</p>
+  <h1>Talk tabs, in slide order</h1>
+  <p class="lede">Open them top to bottom. "Open next" opens the next one in a new tab and ticks it off; clicking a link does the same.</p>
+
+  <div class="bar">
+    <button class="primary" id="next">Open next</button>
+    <button id="reset">Reset</button>
+    <label><input type="checkbox" id="pages"> deck from GitHub Pages (no local server, screenshots only)</label>
+  </div>
+
+  <ol id="list"></ol>
+
+  <footer>
+    The deck links need <code>npm run dev</code> running (port 3030) unless "GitHub Pages" is ticked; on Pages the
+    presenter link is a 404, so open presenter mode from the deck's toolbar there. The Pi links need the laptop on the
+    Pi's network.
+  </footer>
+</main>
+
+<script>
+  const PI = "http://192.168.8.2";
+  const LOCAL = "http://localhost:3030/";
+  const PAGES = "https://orange-case.github.io/slides/2026-11-20-cloud-native-denmark-presentation/";
+
+  function tabs(pages) {
+    const deck = pages ? PAGES : LOCAL;
+    const list = [
+      { when: "whole talk", name: "The deck (audience view)", url: deck },
+      { when: "whole talk", name: "Presenter view: notes, timer, time check", url: deck + "presenter/", skip: pages },
+      { when: "games 1–3", name: "Dashboard", url: PI + "/", hint: "Click the Agent tab: the Decisions panel." },
+      { when: "games 1–3", name: "Grafana talk board", url: PI + "/grafana/d/talk?kiosk" },
+      { when: "after games 1 and 2", name: "Jaeger: one trace per game, summary at its end", url: PI + "/jaeger/search?service=agent&operation=agent.game.summary&lookback=1h&limit=5" },
+      { when: "games 2 and 3", name: "Flagsmith", url: "https://app.flagsmith.com/project/54238", hint: "Open the stage environment's features." },
+      { when: "backup / Q&A", name: "Grafana flags (OpenFeature evaluations)", url: PI + "/grafana/d/feature-flags" },
+      { when: "backup / Q&A", name: "Grafana agent decisions and interventions", url: PI + "/grafana/d/agent-operations" },
+    ];
+    return list.filter(t => !t.skip);
+  }
+
+  // Ticks live only in this browser and only for convenience; the page works without storage.
+  const KEY = "talk-tabs-done";
+  function load() { try { return JSON.parse(localStorage.getItem(KEY) || "[]"); } catch { return []; } }
+  function save(v) { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch {} }
+
+  const listEl = document.getElementById("list");
+  const pagesEl = document.getElementById("pages");
+  let done = load();
+
+  function render() {
+    const items = tabs(pagesEl.checked);
+    const nextIdx = items.findIndex(t => !done.includes(t.url));
+    listEl.innerHTML = "";
+    items.forEach((t, i) => {
+      const li = document.createElement("li");
+      if (done.includes(t.url)) li.className = "done";
+      else if (i === nextIdx) li.className = "next";
+      const body = document.createElement("div");
+      body.innerHTML = `<div class="when"></div><a target="_blank" rel="noopener"></a><span class="url"></span>` + (t.hint ? `<div class="hint"></div>` : "");
+      body.querySelector(".when").textContent = t.when;
+      const a = body.querySelector("a"); a.textContent = t.name; a.href = t.url;
+      a.addEventListener("click", () => mark(t.url));
+      body.querySelector(".url").textContent = t.url;
+      if (t.hint) body.querySelector(".hint").textContent = t.hint;
+      li.appendChild(body);
+      listEl.appendChild(li);
+    });
+    document.getElementById("next").disabled = nextIdx === -1;
+  }
+
+  function mark(url) { if (!done.includes(url)) { done.push(url); save(done); } setTimeout(render, 0); }
+
+  document.getElementById("next").addEventListener("click", () => {
+    const t = tabs(pagesEl.checked).find(t => !done.includes(t.url));
+    if (!t) return;
+    window.open(t.url, "_blank", "noopener");
+    mark(t.url);
+  });
+  document.getElementById("reset").addEventListener("click", () => { done = []; save(done); render(); });
+  pagesEl.addEventListener("change", render);
+  render();
+</script>
+</body>
+</html>
