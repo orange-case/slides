@@ -14,6 +14,8 @@ fonts:
 layout: center
 class: text-center
 ---
+<CaseLogo class="cover-case" />
+
 <div class="kicker">Stop mutating · start adapting</div>
 
 <div class="statement">Two Standards Walk Into <span class="accent">an Agent</span></div>
