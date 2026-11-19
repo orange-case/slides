@@ -450,14 +450,16 @@ layout: center
 <Loop sense="OpenTelemetry" sense-sub="game signals" middle="🤖 Agent" middle-sub="game master" act="Flag" act-sub="game behavior" hot />
 
 <div v-click class="text-center mt-10 text-2xl">
-  Goal flag <code>objectives</code>: <code>endurance</code> · <code>accelerate</code> · <code>chaos</code>
-  <div class="text-lg opacity-60 mt-2">I set it. The agent works toward it.</div>
+  Goal flag <code>objectives</code>: <code>endurance</code> · <code>balanced</code> · <code>accelerate</code> · <code>chaos</code>
+  <div class="text-lg opacity-60 mt-2">A weighted mix. I set it. The agent works toward it.</div>
 </div>
 
 <!--
 The game senses through OpenTelemetry. The agent decides. It acts through a flag.
 
-[click] The goal is a flag too. Endurance, accelerate, or chaos. I set it. The agent works toward it.
+[click] The goal is a flag too. Four goals: endurance, a long game. Balanced, a close one. Accelerate, a quick one. Chaos, lots of movement and change. I set the mix. The agent works toward it.
+
+[Detail, if asked: each variant weights the four, one at 0.7 and the rest at 0.1 (`endurance_focused`, `balanced_focused`, `accelerate_focused`, `chaos_focused`), or `mixed`, all at 0.25, which names no single goal. The strongest weight becomes what the agent measures: endurance = a long game with steady activity and few eliminations; balanced = a close contest of at least two minutes; accelerate = a short game with fast eliminations; chaos = high activity and frequent change. Today it runs `balanced_focused`. Do not dwell on chaos here: game 3 of the demo pays it off.]
 -->
 
 ---
@@ -614,7 +616,7 @@ layout: center
 
 | Flag | Writer | What it controls |
 |---|---|---|
-| `objectives` | 🧍 | the goal: `endurance` · `accelerate` · `chaos` |
+| `objectives` | 🧍 | `endurance` · `balanced` · `accelerate` · `chaos` |
 | `enabled` | 🧍 | kill switch · in-flight answers are discarded |
 | `decision.backend` | 🧍 | `rules` · `jev` · `claude` · `openai` |
 | `decision.jev.act_confidence_threshold` | 🧍 | how sure before acting · `gate` 0.6 · `strict` 0.95 |
