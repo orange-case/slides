@@ -18,7 +18,7 @@ class: text-center
 
 <div class="kicker">Stop mutating · start adapting</div>
 
-<div class="statement">Two Standards Walk Into <span class="accent">an Agent</span></div>
+<div class="statement stencil cover-title">Two Standards Walk<br>Into <span class="accent">an Agent</span></div>
 
 <div class="text-2xl mt-4 opacity-80">
   Runtime Agent Control with OpenTelemetry and OpenFeature
@@ -469,7 +469,7 @@ class: px-8
 <div class="demo-beats demo-3 mt-6">
   <div>🎮 <b>1 · Jev decides</b> · we watch<br><span class="opacity-60">decisions · the board · one trace per game</span></div>
   <div>🎮 <b>2 · Claude</b> · "make player X unkillable"<br><span class="opacity-60">three flags · a sentence and a wider limit</span></div>
-  <div>🎮 <b>3 · Jev, goal: chaos</b> · then off<br><span class="opacity-60">one goal flag · then the kill switch</span></div>
+  <div>🎮 <b>3 · Jev, new goal</b> · then off<br><span class="opacity-60">one goal flag · then the kill switch</span></div>
 </div>
 
 ::right::
