@@ -244,3 +244,11 @@ table.wires th {
   line-height: 1;
   letter-spacing: 0.02em;
 }
+
+/* Contact QR on the bio slide: always dark on white, so it scans in dark mode too */
+.contact-qr {
+  width: 7.5rem;
+  height: 7.5rem;
+  border-radius: 8px;
+  background: #fff;
+}

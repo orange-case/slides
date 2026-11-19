@@ -146,9 +146,12 @@ class: flex flex-col justify-center
   </div>
 </div>
 
-<div class="text-xs opacity-60 mt-8 space-y-1">
-  <div>simon@schrottner.at · schrottner.at</div>
-  <div>github.com/aepfli · in/aepfli · @aepfli.bsky.social</div>
+<div class="flex items-center gap-5 mt-6">
+  <img src="/img/contact-qr.svg" class="contact-qr" alt="QR code to get in touch with Simon" />
+  <div class="text-left">
+    <div class="text-lg font-semibold">Get in touch</div>
+    <div class="text-sm opacity-60">scan me</div>
+  </div>
 </div>
 
 <!--
