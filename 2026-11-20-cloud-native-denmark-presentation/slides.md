@@ -467,7 +467,7 @@ class: px-8
 <div class="demo-beats demo-3 mt-6">
   <div>🎮 <b>1 · Jev decides</b> · we watch<br><span class="opacity-60">decisions · the board · one trace per game</span></div>
   <div>🎮 <b>2 · Claude</b> · "make player X unkillable"<br><span class="opacity-60">three flags · a sentence and a wider limit</span></div>
-  <div>🎮 <b>3 · back to Jev</b> · then the kill switch<br><span class="opacity-60">one flip back · one flip off</span></div>
+  <div>🎮 <b>3 · Jev, goal: chaos</b> · then off<br><span class="opacity-60">one goal flag · then the kill switch</span></div>
 </div>
 
 ::right::
@@ -501,13 +501,17 @@ The words changed which move it picks. The flags decided how far it may go.
 [If the game ends before it acts: say so, and tell the rehearsal game: 28 s, sensitivity 0.2 at 6.6 s, near-death ratio 1.03, stayed in, "The brief was served".]
 [If a Flagsmith change takes more than a few seconds to show: make that change with the script (runbook beat 4b), and show the value in Flagsmith afterwards.]
 
-GAME 3 · Back to normal, then off.
-[In Flagsmith: `decision.operator_brief` = `off`, `decision.magnitude_bounds` = `default`, `decision.backend` = `jev`.] One change back, and Jev decides again. No redeploy.
+GAME 3 · Same agent, a different goal. Then off.
+[In Flagsmith, in this order: `decision.operator_brief` = `off`, `decision.magnitude_bounds` = `default` (FIRST: chaos with the 0.2 floor can make a random player unkillable), `decision.backend` = `jev`, then `objectives` = `chaos_focused`.] Back to Jev, no redeploy. And one more flag: the goal. Earlier I said I set the goal and the agent works toward it. Now I ask for chaos.
+[What chaos changes: the goal becomes high activity and frequent change instead of a long, close game, and cheap effects (rumble, LEDs) no longer have to leave budget for a shield. Expect tempo changes, pacing switches, controller effects, audio cues, rationales about keeping it unpredictable. NOT REHEARSED: Jev's gate was calibrated on the balanced goal, it may act a lot or hardly at all. Either is a result: say what you see, point at the rows.]
+Same agent. Same code. One goal flag, and it plays a different game.
+[If nothing visible happens within about 20 s: "the goal changed, the game did not need it", and go straight to the kill switch.]
 [During the game: `enabled` = `off`. The Decisions panel goes silent, the game keeps playing. An answer in flight lands as discarded. Then `enabled` = `on`. If Flagsmith is slow for this one: `agent-killswitch.sh off` / `on`.]
 The kill switch. The game does not care. It never waited for the agent.
+[Then `objectives` = `balanced_focused`: the stage reset does not touch the goal.]
 
-[Cut order if time is short: game 3's kill switch moves to Q&A, then the Jaeger click in game 1. The degrade beat (Jev unreachable, rules take over) is not in this demo: keep it for Q&A.]
-[After the talk: `talk-stage.sh reset` with the Flagsmith link online.]
+[Cut order if time is short: game 3's chaos goal (keep the kill switch), then the Jaeger click in game 1. The degrade beat (Jev unreachable, rules take over) is not in this demo: keep it for Q&A.]
+[After the talk: `talk-stage.sh reset` with the Flagsmith link online, and `objectives` = `balanced_focused` (the reset leaves the goal alone).]
 -->
 
 ---
@@ -529,7 +533,7 @@ No code change. No review. No redeploy.
 <!--
 [Right after the demo. Point back at games 2 and 3.]
 
-You saw it. I gave it one sentence and a wider limit, and it went as far as I allowed for one player. I flipped one flag, and it stopped. I never touched its code.
+You saw it. I gave it one sentence and a wider limit, and it went as far as I allowed for one player. I changed its goal, and it played a different game. I flipped one flag, and it stopped. I never touched its code.
 
 Its judgment did not change.
 
