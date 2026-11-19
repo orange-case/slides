@@ -929,8 +929,6 @@ class: text-center
   <div>The agent decides. We decide what it may decide.</div>
 </div>
 
-<div class="mt-8 text-lg opacity-60">Next: OpenFeature as a control plane for OpenTelemetry. Flags steering the senses.</div>
-
 <div class="flex justify-center gap-14 mt-6">
   <div class="flex flex-col items-center gap-2">
     <img src="/img/slides-qr.svg" class="contact-qr" alt="QR code for these slides" />

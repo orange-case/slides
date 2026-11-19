@@ -11,5 +11,5 @@
   "flagsmith-pushes": { "path": "/grafana/d-solo/feature-flags?panelId=36", "w": 1600, "h": 600 },
   "jaeger-decide": { "path": "/jaeger/search?service=agent&operation=agent.decide&lookback=1h&limit=20", "w": 1920, "h": 1080, "settle": 4000, "grafana": false },
   "retro": { "path": "/jaeger/search?service=agent&operation=agent.llm.retro&lookback=1h&limit=5", "w": 1920, "h": 1080, "settle": 4000, "grafana": false, "capture": false },
-  "flag-audit": { "w": 1920, "h": 1080, "capture": false }
+  "flag-audit": { "w": 1920, "h": 1080, "capture": false, "link": "https://app.flagsmith.com/project/54238/audit-log", "label": "Flagsmith · audit log" }
 }
