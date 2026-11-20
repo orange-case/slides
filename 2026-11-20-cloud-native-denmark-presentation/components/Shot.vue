@@ -3,12 +3,16 @@
 // otherwise the screenshot from public/img/shots/<name>.png captured by
 // scripts/capture-screenshots.mjs, otherwise a labelled placeholder.
 // The iframe only exists while its slide is on screen, so the Pi is not asked for 20 panels at once.
+// Every view with a live path also gets an "open ↗" link under it: the same view in its own tab,
+// for when the embed errors, renders badly, or the screenshot is showing and you need the tool.
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { useDarkMode, useIsSlideActive } from '@slidev/client'
 import shots from '../shots.json'
 import { demoBase, useDemoHost } from '../composables/useDemoHost'
 
-type ShotDef = { path?: string; w: number; h: number; grafana?: boolean }
+// link: the tool's own URL for a view that cannot be embedded (Flagsmith, behind a login).
+// label: what the placeholder says when its hand-taken screenshot is missing.
+type ShotDef = { path?: string; w: number; h: number; grafana?: boolean; capture?: boolean; link?: string; label?: string }
 const props = withDefaults(defineProps<{ name: string; caption?: string; from?: string; height?: string }>(), { from: 'now-15m' })
 
 const def = (shots as Record<string, ShotDef>)[props.name]
@@ -28,6 +32,12 @@ const liveUrl = computed(() => {
   return `${demoBase}${def.path}${sep}from=${props.from}&to=now&refresh=5s&theme=${isDark.value ? 'dark' : 'light'}`
 })
 const showLive = computed(() => live.value && !!liveUrl.value)
+// The tool itself in a new tab, usable rather than embedded: no kiosk mode, and a single panel
+// (d-solo) becomes its dashboard focused on that panel (d/...?viewPanel=N).
+const openUrl = computed(() => def?.link ?? liveUrl.value
+  ?.replace(/([?&])kiosk(&|$)/, (_m, a, b) => (b ? a : ''))
+  .replace('/grafana/d-solo/', '/grafana/d/')
+  .replace(/([?&])panelId=/, '$1viewPanel='))
 
 // The iframe is laid out at the view's native size (e.g. 1600×600) and scaled down to the slot,
 // so Grafana renders its desktop layout instead of squeezing into a 400 px mobile view.
@@ -55,11 +65,18 @@ const frameStyle = computed(() => ({
       <span class="badge">● live</span>
     </div>
     <img v-else-if="!missing" :src="src" :alt="caption ?? name" :style="height ? { height, objectFit: 'cover', objectPosition: 'top' } : undefined" @error="missing = true" />
+    <a v-else-if="def?.link" class="ph ph-link" :style="box" :href="def.link" target="_blank" rel="noopener">
+      <div class="ph-t">{{ def.label ?? name }}</div>
+      <div class="ph-s">open it live ↗</div>
+    </a>
     <div v-else class="ph" :style="box">
       <div class="ph-t">📸 {{ name }}.png</div>
       <code>npm run shots -- {{ name }}</code>
     </div>
-    <figcaption v-if="caption">{{ caption }}</figcaption>
+    <figcaption v-if="caption || openUrl">
+      <span v-if="caption">{{ caption }}</span>
+      <a v-if="openUrl" :href="openUrl" target="_blank" rel="noopener" class="open" :title="`Open ${caption ?? name} in a new tab`">open ↗</a>
+    </figcaption>
   </figure>
 </template>
 
@@ -77,5 +94,10 @@ const frameStyle = computed(() => ({
   border: 2px dashed var(--line); border-radius: 10px; opacity: 0.7;
 }
 .ph-t { font-size: 1.2rem; font-weight: 600; }
-figcaption { font-size: 0.8rem; opacity: 0.55; margin-top: 0.4rem; text-align: center; }
+.ph-link { opacity: 1; border-color: var(--accent); color: inherit; text-decoration: none; }
+.ph-s { color: var(--accent); font-weight: 600; }
+figcaption { font-size: 0.8rem; margin-top: 0.4rem; text-align: center; display: flex; justify-content: center; gap: 0.6rem; }
+figcaption span { opacity: 0.55; }
+.open { color: var(--accent); opacity: 0.8; text-decoration: none; font-weight: 600; }
+.open:hover { opacity: 1; text-decoration: underline; }
 </style>
