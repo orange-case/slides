@@ -1,0 +1,79 @@
+{
+  "talk-live": {
+    "path": "/grafana/d-solo/talk-live?panelId=1",
+    "w": 1920,
+    "h": 1000
+  },
+  "accel-all": {
+    "path": "/grafana/d-solo/game-players?panelId=37",
+    "w": 1600,
+    "h": 600
+  },
+  "thresholds": {
+    "path": "/grafana/d-solo/game-players?panelId=9",
+    "w": 1600,
+    "h": 600
+  },
+  "tempo": {
+    "path": "/grafana/d-solo/game-players?panelId=10",
+    "w": 1600,
+    "h": 600
+  },
+  "talk-board": {
+    "path": "/grafana/d/talk?kiosk",
+    "w": 1920,
+    "h": 1080
+  },
+  "decide-outcome": {
+    "path": "/grafana/d-solo/agent-operations?panelId=6",
+    "w": 1600,
+    "h": 600
+  },
+  "decide-latency": {
+    "path": "/grafana/d-solo/agent-operations?panelId=7",
+    "w": 1600,
+    "h": 600
+  },
+  "genai-tokens": {
+    "path": "/grafana/d-solo/agent-operations?panelId=15",
+    "w": 1600,
+    "h": 600
+  },
+  "flag-evals": {
+    "path": "/grafana/d-solo/feature-flags?panelId=2",
+    "w": 1600,
+    "h": 600
+  },
+  "flag-writes": {
+    "path": "/grafana/d-solo/feature-flags?panelId=13",
+    "w": 1600,
+    "h": 600
+  },
+  "flagsmith-pushes": {
+    "path": "/grafana/d-solo/feature-flags?panelId=36",
+    "w": 1600,
+    "h": 600
+  },
+  "jaeger-decide": {
+    "path": "/jaeger/search?service=agent&operation=agent.decide&lookback=1h&limit=20",
+    "w": 1920,
+    "h": 1080,
+    "settle": 4000,
+    "grafana": false
+  },
+  "retro": {
+    "path": "/jaeger/search?service=agent&operation=agent.llm.retro&lookback=1h&limit=5",
+    "w": 1920,
+    "h": 1080,
+    "settle": 4000,
+    "grafana": false,
+    "capture": false
+  },
+  "flag-audit": {
+    "w": 1920,
+    "h": 1080,
+    "capture": false,
+    "link": "https://app.flagsmith.com/project/54238/audit-log",
+    "label": "Flagsmith · audit log"
+  }
+}
