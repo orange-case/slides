@@ -68,7 +68,8 @@
     const list = [
       { when: "whole talk", name: "The deck (audience view)", url: deck },
       { when: "whole talk", name: "Presenter view: notes, timer, time check", url: deck + "presenter/", skip: pages },
-      { when: "games 1 and 2", name: "Grafana Talk: Live (the demo slide, full screen)", url: PI + "/grafana/d/talk-live?kiosk", hint: "The demo slide embeds it; this tab is the fallback." },
+      { when: "games 1 and 2", name: "Stage view (the demo slide, full screen)", url: PI + "/?view=stage", hint: "The demo slide embeds it; this tab is the fallback." },
+      { when: "games 1 and 2, fallback", name: "Grafana Talk: Live", url: PI + "/grafana/d/talk-live?kiosk" },
       { when: "game 2", name: "Flagsmith", url: "https://app.flagsmith.com/project/54238", hint: "Stage environment, filter by the demo tag." },
       { when: "after the games", name: "Newest game summary (Jaeger, at the span)", url: PI + "/?latest=summary" },
       { when: "after the games", name: "Newest retro (Jaeger, at the span)", url: PI + "/?latest=retro" },
