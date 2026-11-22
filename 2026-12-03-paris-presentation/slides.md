@@ -387,7 +387,7 @@ The game senses through OpenTelemetry. The agent decides. It acts through a flag
 layout: full
 ---
 
-<Shot name="talk-live" from="now-3m" caption="Live · acceleration per player · red: out · green: the agent acts" />
+<Shot name="stage" caption="Live · acceleration per player · red: out · green: the agent acts" />
 
 <!--
 [TIME CHECK, first thing on this slide. Plan: the demo starts at 8:00 on the timer and takes about 6 minutes. HARD STOP at 14:30: the rest needs about 7 minutes plus questions.]
@@ -398,13 +398,13 @@ layout: full
 - **9:30 to 11:30**: game 2 only, the kill switch at its end.
 - **after 11:30**: no live game. Open the newest summary (`/?latest=summary`), read its first line, move on.
 
-[LIVE DEMO, 3 to 4 players per game (with two players a game ends in 7 to 14 s, before Claude acts). This one slide is the stage: the Grafana board Talk: Live, full screen. One line per player, the dashed warning and death lines, a red marker when someone is out, a green one when the agent acts (hover it: the intervention). If the embed misbehaves: "open ↗" under it.]
+[LIVE DEMO, 3 to 4 players per game (with two players a game ends in 7 to 14 s, before Claude acts). This one slide is the stage: the dashboard's stage view (`http://192.168.8.2/?view=stage`), full screen. One line per player, the dashed warning and death lines, a red marker when someone is out, a green one on the player's line when the agent acts, and the newest three actions as cards with the agent's reason. If the embed misbehaves: "open ↗" under it. Fallback: the Grafana board Talk: Live (`/grafana/d/talk-live?kiosk`, talk-links page). No network at all: the stage view can replay a recorded game (`/?view=stage&replay=…`), record one in rehearsal with `/?view=stage&record`.]
 
 [Before the talk (T-1 h): `talk-stage.sh reset`, then in Flagsmith (filter `demo`; pick an option at 100 % or type the name): `decision.backend` = `jev`, `interventions_allowed` = `standard`, `decision.claude.model` = `sonnet`, `decision.act_confidence_threshold` = `gate`, `objectives` = `balanced_focused`. Note the serial of the controller you will protect. Plug the speaker in before power-on. Then `talk-preflight.sh`.]
 
 GAME 1 · Jev decides, we watch.
 I change nothing. Every line is a player. When a line crosses the red dashed line, that player is out: the red marker.
-[Point at a green marker.] That is the agent. Jev, a third of a second per decision. Hover: which move, for whom.
+[Point at a green marker and its card.] That is the agent. Jev, a third of a second per decision. The card says which move, for whom, and why.
 [After the game, only if time: the newest summary, `http://192.168.8.2/?latest=summary`. One trace is the whole game; the summary span sits at its end.]
 
 GAME 2 · Claude, and one sentence.

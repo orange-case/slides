@@ -1,4 +1,10 @@
 {
+  "stage": {
+    "path": "/?view=stage",
+    "w": 1920,
+    "h": 1000,
+    "grafana": false
+  },
   "talk-live": {
     "path": "/grafana/d-solo/talk-live?panelId=1",
     "w": 1920,
